@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+
+  <link rel="icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+	<link rel="shortcut icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static '/css/all.css' %}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{% static '/css/style-purple.css' %}">
+  <link rel="stylesheet" href="{% static '/css/components.css' %}">    
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static '/css/malio.css' %}">
+
+  <title>复旦一卡通</title>
+
+  <!-- C3 chart css -->
+  <link rel="stylesheet" href="{% static '/css/c3.min.css' %}">
+
+  <!-- General JS Scripts -->
+  <script src="{% static '/js/jquery.min.js' %}"></script>
+  <script src="{% static '/js/bootstrap.min.js' %}"></script>
+  <!-- Counter Up  -->
+  <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
+
+  <script>
+    $('.counter').counterUp({
+      delay: 10,
+      time: 1000
+    });
+
+
+    setTimeout(loadTrafficChart(), 3000);
+  </script>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+        </form>
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown dropdown-list-toggle"></li>
+          <li class="dropdown"><a href="#" data-toggle="dropdown"
+              class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+              <img alt="image" src="{% static '/images/g' %}" class="rounded-circle mr-1">
+              <div class="d-sm-none d-lg-inline-block">Hi, Calvin</div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-divider"></div>
+              <a href="https://www.vhwke.com/user/logout" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> 退出登录
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="main-sidebar sidebar-style-2" tabindex="1" style="overflow: hidden; outline: none;">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="https://www.vhwke.com/"> </a>
+          </div>
+          <div class="sidebar-brand sidebar-brand-sm">
+            <a href="https://www.vhwke.com/">菜单menu</a>
+          </div>
+          <ul class="sidebar-menu">
+            <li class="active"><a class="nav-link" href="https://www.vhwke.com/user"><i class="fab fa-fort-awesome"></i>
+                <span>首页</span></a></li>
+            <li><a class="nav-link" href="https://www.vhwke.com/user/shop"><i class="fas fa-store"></i>
+                <span>餐厅</span></a></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</head>

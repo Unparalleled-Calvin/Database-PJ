@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+	<title>朋友，你好!</title>
+
+	<link rel="icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+	<link rel="shortcut icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+	<!-- General CSS Files -->
+	<link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static '/css/all.min.css' %}">
+	<link rel="stylesheet" href="{% static '/css/login.css' %}">
+	<script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
+	<script src="{% static '/js/clipboard.min.js' %}"></script>
+	<script src="{% static '/js/jquery.js' %}"></script>
+	<script src="{% static '/js/echarts.min.js' %}"></script>
+	<style>
+		#bg_image {
+			background-image: url("{% static '/images/waterfall.jpg' %}");
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			-moz-background-size: 100% 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app">
+		<section class="section">
+			<div class="d-flex flex-wrap align-items-stretch">
+				<div class="col-lg-4 col-md-6 col-12 order-lg-1 min-vh-100 order-2 bg-white">
+					<div class="p-4 m-3">
+						<img src="{% static '/images/logo.png' %}" alt="logo" width="80"
+							class="shadow-light rounded-circle mb-5 mt-2">
+						<h4 class="text-dark font-weight-normal">复旦一卡通 <span class="font-weight-bold"> </span></h4>
+						<p class="text-muted">随时随地<br>畅游校园</p>
+
+						<form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
+							{% csrf_token %}
+							<div class="login-form-item">
+								<div class="form-group">
+									<label for="email" class="control-label">邮箱</label>
+									<input id="email" type="email" class="form-control" name="email" tabindex="1"
+										required autofocus>
+									<div class="invalid-feedback">
+										请填写邮箱
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="d-block">
+										<label for="password" class="control-label">密码</label>
+										<div class="float-right">
+											<a href="/reset" class="text-small">
+												忘记密码了？
+											</a>
+										</div>
+									</div>
+									<input id="password" type="password" class="form-control" name="password"
+										tabindex="2" required>
+									<div class="invalid-feedback">
+										请填写密码
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group login-form-item">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" name="remember" class="custom-control-input" tabindex="3"
+										id="remember-me">
+									<label class="custom-control-label" for="remember-me">记住密码</label>
+								</div>
+							</div>
+
+							<div class="form-group text-right">
+								<button type="submit" class="btn btn-primary btn-lg btn-icon icon-right login"
+									tabindex="4" id="login-button">
+									登陆
+								</button>
+							</div>
+						</form>
+
+						<div class="mt-5 text-center login-form-item">
+							还没有账号？<a href="/register">马上注册 👉</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-8 col-12 order-lg-2 order-1 min-vh-100 background-walk-y position-relative overlay-gradient-bottom"
+					id="bg_image">
+					<div class="absolute-bottom-left index-2">
+						<div class="text-light p-5 pb-2">
+							<div class="mb-5 pb-3">
+								<h1 class="mb-2 display-4 font-weight-bold" style='position:absolute; bottom:0;'>Good
+									Morning</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	</script>
+</body>
+
+</html>
+
+<script>
+	var is_void = false;
+	function login() {
+		if (!$("#password").val() || !$("#email").val()) {
+			is_void = true;
+		}
+		var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+
+		$.ajax({
+			type: "POST",
+			url: "/login",
+			dataType: "json",
+			data: {
+				email: $("#email").val(),
+				passwd: $("#password").val(),
+				remember_me: $("#remember-me:checked").val(),
+				csrfmiddlewaretoken: csrfToken,
+			},
+			success: function (data) {
+				if (is_void) {
+					swal('出错了', '请将邮箱和密码填写完整', 'error');
+				}
+				else if (data.ret == 1) {
+					window.location.assign('/user')
+				}
+				else {
+					var errorMsg = '密码或邮箱不正确';
+					swal('出错了', errorMsg, 'error');
+				}
+			}
+		});
+	}
+	$("html").keydown(function (event) {
+		if (event.keyCode == 13) {
+			login();
+		}
+	});
+	$("#login-button").click(function () {
+		login();
+	});
+</script>
