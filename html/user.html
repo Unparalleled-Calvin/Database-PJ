@@ -31,7 +31,7 @@
   <!-- Counter Up  -->
   <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
   <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
-
+  
   <script>
     $('.counter').counterUp({
       delay: 10,
@@ -48,6 +48,10 @@
       <div class="navbar-bg"></div>
       <nav class="navbar navbar-expand-lg main-navbar">
         <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" id="sidebar-button" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+            </li>
+          </ul>
         </form>
         <ul class="navbar-nav navbar-right">
           <li class="dropdown dropdown-list-toggle"></li>
@@ -71,7 +75,7 @@
             <a href=""> </a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="">菜单menu</a>
+            <a href="">菜单</a>
           </div>
           <ul class="sidebar-menu">
             <li class="active"><a class="nav-link" href="/user"><i class="fas fa-school"></i>
@@ -94,7 +98,20 @@
       </div>
     </div>
   </div>
-
-
 </body>
 </head>
+
+<script>
+  $('#sidebar-button').click(function () {
+    console.log(1)
+    var body = $('body')
+    if (body.hasClass('sidebar-mini')) {
+      body.removeClass('sidebar-mini');
+      body.addClass('sidebar-show');
+    } else {
+      body.addClass('sidebar-mini');
+      body.removeClass('sidebar-show');
+    }
+    return false;
+  });
+</script>

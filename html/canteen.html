@@ -56,6 +56,10 @@
       <div class="navbar-bg"></div>
       <nav class="navbar navbar-expand-lg main-navbar">
         <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" id="sidebar-button" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+            </li>
+          </ul>
         </form>
         <ul class="navbar-nav navbar-right">
           <li class="dropdown dropdown-list-toggle"></li>
@@ -79,7 +83,7 @@
             <a href=""> </a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="">菜单menu</a>
+            <a href="">菜单</a>
           </div>
           <ul class="sidebar-menu">
             <li><a class="nav-link" href="/user"><i class="fas fa-school"></i>
@@ -229,5 +233,20 @@
   });
   $("#order_button6").click(function () {
     order(6);
+  });
+</script>
+
+<script>
+  $('#sidebar-button').click(function () {
+    console.log(1)
+    var body = $('body')
+    if (body.hasClass('sidebar-mini')) {
+      body.removeClass('sidebar-mini');
+      body.addClass('sidebar-show');
+    } else {
+      body.addClass('sidebar-mini');
+      body.removeClass('sidebar-show');
+    }
+    return false;
   });
 </script>
