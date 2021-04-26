@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login', views.login),
     path('user', views.user),
+    path('user/canteen', views.canteen),
 ]

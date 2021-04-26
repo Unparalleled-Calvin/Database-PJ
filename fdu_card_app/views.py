@@ -25,4 +25,11 @@ def login(request):
 def user(request):
     return render(request, "user.html")
     
-    
+def canteen(request):
+    if request.method == 'POST':
+        ret_dict = {}
+        ret_dict['ret'] = 1
+        ret = JsonResponse(ret_dict)
+        return ret
+    else:
+        return render(request, "canteen.html")
