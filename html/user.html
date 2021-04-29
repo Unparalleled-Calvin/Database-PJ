@@ -62,7 +62,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <div class="dropdown-divider"></div>
-              <a href="/user/logout" class="dropdown-item has-icon text-danger">
+              <a href="logout" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> 退出登录
               </a>
             </div>
@@ -80,11 +80,11 @@
           <ul class="sidebar-menu">
             <li class="active"><a class="nav-link" href="/user"><i class="fas fa-school"></i>
                 <span>首页</span></a></li>
-            <li ><a class="nav-link" href="/user/canteen"><i class=" fas fa-cookie-bite"></i>
+            <li ><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                 <span>用餐</span></a></li>
-            <li><a class="nav-link" href="/user/leave"><i class="fas fa-torii-gate"></i>
+            <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
                 <span>离校</span></a></li>
-            <li><a class="nav-link" href="/user/access"><i class="fas fa-building"></i>
+            <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
                 <span>回寝</span></a></li>
           </ul>
         </aside>
@@ -103,7 +103,6 @@
 
 <script>
   $('#sidebar-button').click(function () {
-    console.log(1)
     var body = $('body')
     if (body.hasClass('sidebar-mini')) {
       body.removeClass('sidebar-mini');
@@ -114,4 +113,9 @@
     }
     return false;
   });
+  if(window.screen.width < 600){
+    var target = document.getElementById("sidebar-button");
+    $('body').addClass('sidebar-mini');
+    target.style.display="none";
+  }
 </script>

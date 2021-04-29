@@ -18,8 +18,11 @@ from django.urls import path
 from fdu_card_app import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     path('login', views.login),
+    path('', views.login),
     path('user', views.user),
-    path('user/canteen', views.canteen),
+    path('canteen', views.canteen),
+    path('register', views.register),
+    path('logout', views.logout),
 ]

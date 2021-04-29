@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>注册</title>
+
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/all.min.css' %}">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <link rel="stylesheet" href="{% static '/css/components.css' %}">
+
+
+    <!-- General JS Scripts -->
+    <script src="{% static '/js/jquery.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+    <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static '/js/jquery.pwstrength.min.js' %}"></script>
+</head>
+
+<body>
+    <div id="app">
+        <section class="section">
+            <div class="container mt-5">
+                <div class="row">
+                    <div
+                        class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+                        <div class="login-brand">
+                            <img src="{% static '/images/logo.png'%}" alt="logo" width="100"
+                                class="shadow-light rounded-circle">
+                        </div>
+
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h4>注册</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                            <label for="name">用户名</label>
+                                            <input id="name" type="text" class="form-control" name="name" required=""
+                                                autofocus="">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                            <label for="identity">身份</label>
+                                            <div class="input-group">
+                                                <select class="custom-select input-group-append col-5"
+                                                    name="identity_postfix" id="identity_postfix" required="" style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;" onchange="javascript:show();">
+                                                    <option value="student" selected="">学生</option>
+                                                    <option value="teacher">教师</option>
+                                                    <option value="others">外来人员</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
+                                            id="age_input">
+                                            <label for="age">年龄</label>
+                                            <input id="age" type="text" class="form-control" name="age" required="">
+                                        </div>
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
+                                            id="rank_input">
+                                            <label for="rank_postfix">职称</label>
+                                            <div class="input-group">
+                                                <select class="custom-select input-group-append col-5"
+                                                    name="rank_postfix" id="rank_postfix" required="" style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;">
+                                                    <option value="assistant" selected="">助教</option>
+                                                    <option value="lecturer">讲师</option>
+                                                    <option value="associate professor">副教授</option>
+                                                    <option value="professor">教授</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:inline;"
+                                            id="enrolmentdt_input">
+                                            <label for="enrolmentdt">入学时间</label>
+                                            <input id="enrolmentdt" type="date" class="form-control" name="enrolmentdt"
+                                                required="">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
+                                            id="work_input">
+                                            <label for="work">工作事由</label>
+                                            <input id="work" type="test" class="form-control" name="work"
+                                                required="">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                            <label for="email">邮箱</label>
+                                            <div class="input-group">
+                                                <input type="text" id="email" class="form-control col-7" required="">
+                                                <select class="custom-select input-group-append col-5"
+                                                    id="email_postfix" required="" style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;">
+                                                    <option value="@fudan.edu.cn" selected="">@fudan.edu.cn</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                            <label for="passwd" class="d-block">密码</label>
+                                            <input id="passwd" type="password" class="form-control pwstrength"
+                                                data-indicator="pwindicator" name="passwd" required="">
+                                            <div id="pwindicator" class="pwindicator pw-weak">
+                                                <div class="bar"></div>
+                                                <div class="label">这种密码就是逊啦</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                            <label for="repasswd" class="d-block">确认密码</label>
+                                            <input id="repasswd" type="password" class="form-control" name="repasswd"
+                                                required="">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="agree" class="custom-control-input" id="agree"
+                                                checked="checked" required="">
+                                            <label class="custom-control-label" for="agree">注册即代表同意 <a
+                                                    href="javascript:void(0);" id="TermsOfService">服务条款</a></label>
+                                            <div class="invalid-feedback">
+                                                请阅读服务条款并勾选
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button id="register-confirm" class="btn btn-primary btn-lg btn-block">
+                                            注册
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="mt-5 text-muted text-center">
+                            已经有账号了？<a href="/login">马上登录 👉</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</body>
+<script>
+    $(".pwstrength").pwstrength({
+        texts: ['这种密码就是逊啦', '弱诶', '一般般', '你很勇哦', '我超勇的好不好']
+    });
+    $("#TermsOfService").click(function () {
+        swal('(。-`ω´-)', '你不会真的以为我们会写服务条款吧', 'info');
+    });
+
+    function register() {
+        var email = $("#email").val() + $("#email_postfix").val();
+        var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+            type: "POST",
+            url: "/register",
+            dataType: "json",
+            data: {
+                email: email,
+                name: $("#name").val(),
+                passwd: $("#passwd").val(),
+                repasswd: $("#repasswd").val(),
+                identity: $("#identity_postfix").val(),
+                enrolmentdt: $("#enrolmentdt").val(),
+                age: $("#age").val(),
+                rank: $("#rank").val(),
+                work: $("work").val(),
+                csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+                if (data.ret == 1) {
+                    swal('注册成功', data.msg, 'success');
+                } else {
+                    swal('出错了', data.msg, 'error');
+                }
+            }
+        });
+    }
+    $("html").keydown(function (event) {
+        if (event.keyCode == 13) {
+            register();
+        }
+    });
+    $("#register-confirm").click(function () {
+        register();
+    });
+
+
+</script>
+
+<script>
+    function show() {
+        var sel_val = document.getElementById('identity_postfix').value;
+        var age_input = document.getElementById('age_input');
+        var rank_input = document.getElementById('rank_input');
+        var enrolmentdt_input = document.getElementById('enrolmentdt_input');
+        var work_input = document.getElementById('work_input');
+        if (sel_val == 'teacher') { age_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none';work_input.style.display = 'none';}
+        if (sel_val == 'student') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline';work_input.style.display = 'none'; }
+        if (sel_val == 'others') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none';work_input.style.display = 'inline'; }
+    }
+</script>
+</html>
