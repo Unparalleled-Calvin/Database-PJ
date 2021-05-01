@@ -103,8 +103,7 @@
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
                                             id="work_input">
                                             <label for="work">工作事由</label>
-                                            <input id="work" type="test" class="form-control" name="work"
-                                                required="">
+                                            <input id="work" type="test" class="form-control" name="work" required="">
                                         </div>
                                     </div>
 
@@ -198,7 +197,15 @@
             },
             success: function (data) {
                 if (data.ret == 1) {
-                    swal('注册成功', data.msg, 'success');
+                    swal({
+                        type: 'success',
+                        title: '注册成功',
+                        text: data.msg,
+                        showCloseButton: true,
+                        onClose: () => {
+                            window.location.assign('/login')
+                        }
+                    })
                 } else {
                     swal('出错了', data.msg, 'error');
                 }
@@ -224,9 +231,10 @@
         var rank_input = document.getElementById('rank_input');
         var enrolmentdt_input = document.getElementById('enrolmentdt_input');
         var work_input = document.getElementById('work_input');
-        if (sel_val == 'teacher') { age_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none';work_input.style.display = 'none';}
-        if (sel_val == 'student') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline';work_input.style.display = 'none'; }
-        if (sel_val == 'others') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none';work_input.style.display = 'inline'; }
+        if (sel_val == 'teacher') { age_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; }
+        if (sel_val == 'student') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none'; }
+        if (sel_val == 'others') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; }
     }
 </script>
+
 </html>
