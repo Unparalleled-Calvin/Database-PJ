@@ -6,6 +6,7 @@ from datetime import datetime,timedelta
 import sys
 sys.path.append('.\\fdu_card_app')
 from methods import select
+from methods import insert
 
 cursor = connection.cursor()
 
@@ -21,26 +22,42 @@ def login(request):
         ret.set_cookie('name', 'admin', expires = datetime.now() + timedelta(minutes = 5))
         return ret
     else:
-        if 'name' in request.COOKIES.keys():
+        if 'ID' in request.COOKIES:
             return HttpResponseRedirect('/user')
         else:
             return render(request, "login.html")
 
 def logout(request):
     response = HttpResponseRedirect('/login')
-    if 'name' in request.COOKIES.keys():
-        response.delete_cookie('name')
+    if 'ID' in request.COOKIES:
+        response.delete_cookie('ID')
     return response
 
 def register(request):
+    ret_dict = {}
+    def ID_invalid(post):
+        if post['identity'] == 'student' and len(post['ID']) != 11:
+            ret_dict['msg'] = '学生的学工号必须为11位'
+        elif post['identity'] == 'teacher' and len(post['ID']) != 6:
+            ret_dict['msg'] = '老师的学工号必须为6位'
+        elif post['identity'] == 'others' and len(post['ID']) != 5:
+            ret_dict['msg'] = '外来人员的学工号必须为5位'
+        else:
+            return False
+        return True
+            
     if request.method == 'POST':
-        ret_dict = {}
-        if request.POST['name'] == '' or request.POST['passwd'] == '' or request.POST['repasswd'] == '' or request.POST['email'].split('@')[0] == '' :
+        if request.POST['name'] == '' or request.POST['passwd'] == '' or request.POST['repasswd'] == '' or request.POST['ID'] == '' :
             ret_dict['ret'] = 2
             ret_dict['msg'] = '必填项均不能为空'
+        elif ID_invalid(request.POST):
+            ret_dict['ret'] = 2
         elif request.POST['identity'] == 'student' and request.POST['enrolmentdt'] == '' :
             ret_dict['ret'] = 2
             ret_dict['msg'] = '入学时间不能为空'
+        elif request.POST['identity'] == 'student' and request.POST['stuclass'] == '' :
+            ret_dict['ret'] = 2
+            ret_dict['msg'] = '班级不能为空'
         elif request.POST['identity'] == 'teacher' and request.POST['age'] == '':
             ret_dict['ret'] = 2
             ret_dict['msg'] = '年龄不能为空'
@@ -53,7 +70,25 @@ def register(request):
         else:
             ret_dict['ret'] = 1
             ret_dict['msg'] = '即将跳转至用户界面'
+        if ret_dict['ret'] == 1:
+            try:
+                insert.insert_person(cursor, request.POST['ID'], request.POST['name'])
+                insert.insert_card(cursor, request.POST['ID'], request.POST['passwd'])
+                if request.POST['identity'] == 'student':
+                    insert.insert_student(cursor, request.POST['ID'], request.POST['enrolmentdt'], request.POST['stuclass'])
+                elif request.POST['identity'] == 'teacher':
+                    insert.insert_teacher(cursor, request.POST['ID'], request.POST['age'], request.POST['rank'])
+                elif request.POST['identity'] == 'others':
+                    insert.insert_others(cursor, request.POST['ID'], request.POST['work'])
+            except Exception:
+                connection.rollback()
+                ret_dict['ret'] = 2
+                ret_dict['msg'] = '插入失败，该用户已存在'
+            else:
+                connection.commit()
+                
         ret = JsonResponse(ret_dict)
+        ret.set_cookie('ID', request.POST['ID'], expires = datetime.now() + timedelta(minutes = 5))
         ret.set_cookie('name', request.POST['name'], expires = datetime.now() + timedelta(minutes = 5))
         return ret
     else:
@@ -72,19 +107,19 @@ def reset(request):
             ret_dict['ret'] = 1
             ret_dict['msg'] = '即将跳转至用户界面'
         ret = JsonResponse(ret_dict)
-        ret.set_cookie('name', 'temp', expires = datetime.now() + timedelta(minutes = 5))
+        ret.set_cookie('ID', request.POST['ID'], expires = datetime.now() + timedelta(minutes = 5))
         return ret
     else:
         return render(request, "reset.html")
 
 def user(request):
-    if 'name' not in request.COOKIES:
+    if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     else:
         return render(request, "user.html")
     
 def canteen(request):
-    if 'name' not in request.COOKIES:
+    if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
         ret_dict = {}

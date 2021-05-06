@@ -79,7 +79,7 @@
                                             <label for="rank_postfix">职称</label>
                                             <div class="input-group">
                                                 <select class="custom-select input-group-append col-5"
-                                                    name="rank_postfix" id="rank_postfix" required="" style="border-top-right-radius: .25rem;
+                                                    name="rank" id="rank" required="" style="border-top-right-radius: .25rem;
                           border-bottom-right-radius: .25rem;">
                                                     <option value="assistant" selected="">助教</option>
                                                     <option value="lecturer">讲师</option>
@@ -97,6 +97,12 @@
                                             <input id="enrolmentdt" type="date" class="form-control" name="enrolmentdt"
                                                 required="">
                                         </div>
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:inline;"
+                                            id="stuclass_input">
+                                            <label for="stuclass">班级</label>
+                                            <input id="stuclass" type="text" class="form-control" name="stuclass"
+                                                required="">
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -109,14 +115,9 @@
 
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="email">邮箱</label>
+                                            <label for="ID">学工号</label>
                                             <div class="input-group">
-                                                <input type="text" id="email" class="form-control col-7" required="">
-                                                <select class="custom-select input-group-append col-5"
-                                                    id="email_postfix" required="" style="border-top-right-radius: .25rem;
-                          border-bottom-right-radius: .25rem;">
-                                                    <option value="@fudan.edu.cn" selected="">@fudan.edu.cn</option>
-                                                </select>
+                                                <input type="text" id="ID" class="form-control col-7" required="">
                                             </div>
                                         </div>
                                     </div>
@@ -177,22 +178,22 @@
     });
 
     function register() {
-        var email = $("#email").val() + $("#email_postfix").val();
         var csrfToken = $("[name='csrfmiddlewaretoken']").val();
         $.ajax({
             type: "POST",
             url: "/register",
             dataType: "json",
             data: {
-                email: email,
                 name: $("#name").val(),
+                ID: $('#ID').val(),
                 passwd: $("#passwd").val(),
                 repasswd: $("#repasswd").val(),
                 identity: $("#identity_postfix").val(),
                 enrolmentdt: $("#enrolmentdt").val(),
+                stuclass: $('#stuclass').val(),
                 age: $("#age").val(),
                 rank: $("#rank").val(),
-                work: $("work").val(),
+                work: $("#work").val(),
                 csrfmiddlewaretoken: csrfToken,
             },
             success: function (data) {
@@ -230,10 +231,11 @@
         var age_input = document.getElementById('age_input');
         var rank_input = document.getElementById('rank_input');
         var enrolmentdt_input = document.getElementById('enrolmentdt_input');
+        var stuclass_input = document.getElementById('stuclass_input');
         var work_input = document.getElementById('work_input');
-        if (sel_val == 'teacher') { age_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; }
-        if (sel_val == 'student') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none'; }
-        if (sel_val == 'others') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; }
+        if (sel_val == 'teacher') { age_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; }
+        if (sel_val == 'student') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none';  stuclass_input.style.display = 'inline';}
+        if (sel_val == 'others') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; }
     }
 </script>
 

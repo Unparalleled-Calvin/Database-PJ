@@ -3,14 +3,6 @@ def insert_person(cursor, id, name):
     cursor.execute(sql)
     print("Success! You have added a member to the table of person.")
 
-
-def insert_teacher_ranknull(cursor, id, age):
-    sql = "insert into teacher values('{}', '{}')".format(
-        id, age)
-    cursor.execute(sql)
-    print("Success! You have added a member to the table of teacher.")
-
-
 def insert_teacher(cursor, id, age, rank):
     sql = "insert into teacher values('{}', '{}', '{}')".format(
         id, age, rank)
@@ -18,9 +10,9 @@ def insert_teacher(cursor, id, age, rank):
     print("Success! You have added a member to the table of teacher.")
 
 
-def insert_student(cursor, id, enrolmentdt, class):
+def insert_student(cursor, id, enrolmentdt, stuclass):
     sql = "insert into student values('{}', '{}', '{}')".format(
-        id, enrolmentdt, class)
+        id, enrolmentdt, stuclass)
     cursor.execute(sql)
     print("Success! You have added a member to the table of student.")
 
@@ -39,9 +31,9 @@ def insert_domitory(cursor, dno, dadmin, dtel, dfloor):
     print("Success! You have added a member to the table of domitory.")
 
 
-def insert_card(cursor, id, remainingsum=0, carddate='now()', cdno='null', valid=0):
-    sql = "insert into card values('{}', '{}', '{}', {}, '{}')".format(
-        id, remainingsum, carddate, cdno, valid)
+def insert_card(cursor, id, passwd, remainingsum=0, carddate='now()', cdno='null', valid=1):
+    sql = "insert into card values('{}', '{}', '{}', '{}', {}, '{}')".format(
+        id, remainingsum, carddate, passwd, cdno, valid)
     cursor.execute(sql)
     print("Success! You have added a member to the table of card.")
 

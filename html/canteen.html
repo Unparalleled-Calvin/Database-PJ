@@ -34,6 +34,7 @@
 
   <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
   <script src="{% static '/js/jquery.js' %}"></script>
+  <script src="{% static '/js/gargets.js' %}"></script>
 
   <script>
     $('.counter').counterUp({
@@ -66,7 +67,7 @@
           <li class="dropdown"><a href="#" data-toggle="dropdown"
               class="nav-link dropdown-toggle nav-link-lg nav-link-user">
               <img alt="image" src="{% static '/images/g' %}" class="rounded-circle mr-1">
-              <div class="d-sm-none d-lg-inline-block">Hi, Calvin</div>
+              <div class="d-sm-none d-lg-inline-block" id="name">Hi, Calvin</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <div class="dropdown-divider"></div>
@@ -184,6 +185,47 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-12 col-md-4 col-lg-4">
+              <div class="card">
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    {% csrf_token %}
+                    <div class="center">
+                      <input type="submit" id="order_button7"
+                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+              <div class="card">
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    {% csrf_token %}
+                    <div class="center">
+                      <input type="submit" id="order_button8"
+                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4 col-lg-4">
+              <div class="card">
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    {% csrf_token %}
+                    <div class="center">
+                      <input type="submit" id="order_button9"
+                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </div>
@@ -234,6 +276,15 @@
   $("#order_button6").click(function () {
     order(6);
   });
+  $("#order_button4").click(function () {
+    order(7);
+  });
+  $("#order_button5").click(function () {
+    order(8);
+  });
+  $("#order_button6").click(function () {
+    order(9);
+  });
 </script>
 
 <script>
@@ -253,4 +304,8 @@
     $('body').addClass('sidebar-mini');
     target.style.display="none";
   }
+</script>
+
+<script>
+  var name = document.getElementById('name').innerHTML=("Hi, " + getCookieByString('name'))
 </script>

@@ -33,8 +33,9 @@ create TABLE card(
     ID VARCHAR(11),
     remainingsum NUMERIC(10, 2) DEFAULT 0,
     carddate TIMESTAMP DEFAULT now(),
+    passwd VARCHAR(50) NOT NULL,
     cdno INT DEFAULT null,
-    valid INT DEFAULT 0,
+    valid INT DEFAULT 1,
     PRIMARY KEY(ID, carddate),
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     foreign key(cdno) REFERENCES domitory(dno) ON DELETE
