@@ -33,7 +33,7 @@ create TABLE card(
     ID VARCHAR(11),
     remainingsum NUMERIC(10, 2) DEFAULT 0,
     carddate TIMESTAMP DEFAULT now(),
-    passwd VARCHAR(50) NOT NULL,
+    passwd VARCHAR(50) DEFAULT '000000',
     cdno INT DEFAULT null,
     valid INT DEFAULT 1,
     PRIMARY KEY(ID, carddate),
