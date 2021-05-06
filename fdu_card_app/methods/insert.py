@@ -31,7 +31,7 @@ def insert_domitory(cursor, dno, dadmin, dtel, dfloor):
     print("Success! You have added a member to the table of domitory.")
 
 
-def insert_card(cursor, id, passwd, remainingsum=0, carddate='now()', cdno='null', valid=1):
+def insert_card(cursor, id, remainingsum=0, carddate='now()', passwd = '000000', cdno='null', valid=1):
     sql = "insert into card values('{}', '{}', '{}', '{}', {}, '{}')".format(
         id, remainingsum, carddate, passwd, cdno, valid)
     cursor.execute(sql)

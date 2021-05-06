@@ -122,23 +122,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="passwd" class="d-block">密码</label>
-                                            <input id="passwd" type="password" class="form-control pwstrength"
-                                                data-indicator="pwindicator" name="passwd" required="">
-                                            <div id="pwindicator" class="pwindicator pw-weak">
-                                                <div class="bar"></div>
-                                                <div class="label">这种密码就是逊啦</div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="repasswd" class="d-block">确认密码</label>
-                                            <input id="repasswd" type="password" class="form-control" name="repasswd"
-                                                required="">
-                                        </div>
-                                    </div>
-
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" name="agree" class="custom-control-input" id="agree"
@@ -170,12 +153,6 @@
 
 </body>
 <script>
-    $(".pwstrength").pwstrength({
-        texts: ['这种密码就是逊啦', '弱诶', '一般般', '你很勇哦', '我超勇的好不好']
-    });
-    $("#TermsOfService").click(function () {
-        swal('(。-`ω´-)', '你不会真的以为我们会写服务条款吧', 'info');
-    });
 
     function register() {
         var csrfToken = $("[name='csrfmiddlewaretoken']").val();
@@ -186,8 +163,6 @@
             data: {
                 name: $("#name").val(),
                 ID: $('#ID').val(),
-                passwd: $("#passwd").val(),
-                repasswd: $("#repasswd").val(),
                 identity: $("#identity_postfix").val(),
                 enrolmentdt: $("#enrolmentdt").val(),
                 stuclass: $('#stuclass').val(),

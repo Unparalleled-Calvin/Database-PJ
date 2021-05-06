@@ -47,9 +47,9 @@ def register(request):
         return True
             
     if request.method == 'POST':
-        if request.POST['name'] == '' or request.POST['passwd'] == '' or request.POST['repasswd'] == '' or request.POST['ID'] == '' :
+        if request.POST['name'] == ''  or request.POST['ID'] == '' :
             ret_dict['ret'] = 2
-            ret_dict['msg'] = '必填项均不能为空'
+            ret_dict['msg'] = '用户名和学工号不能为空'
         elif ID_invalid(request.POST):
             ret_dict['ret'] = 2
         elif request.POST['identity'] == 'student' and request.POST['enrolmentdt'] == '' :
@@ -64,16 +64,13 @@ def register(request):
         elif request.POST['identity'] == 'others' and request.POST['work'] == '' :
             ret_dict['ret'] = 2
             ret_dict['msg'] = '工作事由'
-        elif request.POST['passwd'] != request.POST['repasswd']:
-            ret_dict['ret'] = 2
-            ret_dict['msg'] = '两次密码填写不一致'
         else:
             ret_dict['ret'] = 1
             ret_dict['msg'] = '即将跳转至用户界面'
         if ret_dict['ret'] == 1:
             try:
                 insert.insert_person(cursor, request.POST['ID'], request.POST['name'])
-                insert.insert_card(cursor, request.POST['ID'], request.POST['passwd'])
+                insert.insert_card(cursor, request.POST['ID'])
                 if request.POST['identity'] == 'student':
                     insert.insert_student(cursor, request.POST['ID'], request.POST['enrolmentdt'], request.POST['stuclass'])
                 elif request.POST['identity'] == 'teacher':
