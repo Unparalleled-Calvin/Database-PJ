@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -44,14 +45,13 @@
 						<p class="text-muted">随时随地<br>畅游校园</p>
 
 						<form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
-							{% csrf_token %}
 							<div class="login-form-item">
 								<div class="form-group">
-									<label for="email" class="control-label">邮箱</label>
-									<input id="email" type="email" class="form-control" name="email" tabindex="1"
+									<label for="ID" class="control-label">学工号</label>
+									<input id="ID" type="text" class="form-control" name="ID" tabindex="1"
 										required autofocus>
 									<div class="invalid-feedback">
-										请填写邮箱
+										请填写学工号
 									</div>
 								</div>
 
@@ -115,7 +115,7 @@
 <script>
 	var is_void = false;
 	function login() {
-		if (!$("#password").val() || !$("#email").val()) {
+		if (!$("#password").val() || !$("#ID").val()) {
 			is_void = true;
 		} else {
 			is_void = false;
@@ -127,20 +127,20 @@
 			url: "/login",
 			dataType: "json",
 			data: {
-				email: $("#email").val(),
+				ID: $("#ID").val(),
 				passwd: $("#password").val(),
 				remember_me: $("#remember-me:checked").val(),
 				csrfmiddlewaretoken: csrfToken,
 			},
 			success: function (data) {
 				if (is_void) {
-					swal('出错了', '请将邮箱和密码填写完整', 'error');
+					swal('出错了', '请将学工号和密码填写完整', 'error');
 				}
 				else if (data.ret == 1) {
 					window.location.assign('/user')
 				}
 				else {
-					swal('出错了', '密码或邮箱不正确', 'error');
+					swal('出错了', '密码或学工号不正确', 'error');
 				}
 			}
 		});

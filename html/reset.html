@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -43,7 +44,6 @@
 
                             <div class="card-body">
                                 <form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
-                                    {% csrf_token %}
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
                                             <label for="email">邮箱</label>

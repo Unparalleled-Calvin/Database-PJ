@@ -6,3 +6,10 @@ function getCookieByString(cookieName) {
     if (end == -1) end = document.cookie.length;
     return document.cookie.substring(start, end);
 }
+
+function addClassList(element, str) {
+    var classList = str.split(" ");
+    classList.forEach(classElement => {
+        element.classList.add(classElement);
+    });
+}

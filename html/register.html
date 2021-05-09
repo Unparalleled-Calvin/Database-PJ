@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -43,14 +44,21 @@
 
                             <div class="card-body">
                                 <form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
-                                    {% csrf_token %}
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="name">用户名</label>
+                                            <label for="name">姓名</label>
                                             <input id="name" type="text" class="form-control" name="name" required=""
                                                 autofocus="">
                                         </div>
+                                    </div>
 
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                            <label for="ID">学工号</label>
+                                            <div class="input-group">
+                                                <input type="text" id="ID" class="form-control col-7" required="">
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -110,15 +118,6 @@
                                             id="work_input">
                                             <label for="work">工作事由</label>
                                             <input id="work" type="test" class="form-control" name="work" required="">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="ID">学工号</label>
-                                            <div class="input-group">
-                                                <input type="text" id="ID" class="form-control col-7" required="">
-                                            </div>
                                         </div>
                                     </div>
 

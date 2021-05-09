@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.db import connection
 from datetime import datetime,timedelta
 import sys
+import json
 sys.path.append('.\\fdu_card_app')
 from methods import select
 from methods import insert
@@ -14,11 +15,12 @@ cursor = connection.cursor()
 def login(request):
     if request.method == 'POST':
         ret_dict = {}
-        if(request.POST['email'] == 'admin@fudan.edu.cn' and request.POST['passwd'] == 'admin'):
+        if(request.POST['ID'] == 'admin' and request.POST['passwd'] == 'admin'):
             ret_dict['ret'] = 1
         else:
             ret_dict['ret'] = 2
         ret = JsonResponse(ret_dict)
+        ret.set_cookie('ID', 'admin', expires = datetime.now() + timedelta(minutes = 5))
         ret.set_cookie('name', 'admin', expires = datetime.now() + timedelta(minutes = 5))
         return ret
     else:
@@ -124,4 +126,6 @@ def canteen(request):
         ret = JsonResponse(ret_dict)
         return ret
     else:
-        return render(request, "canteen.html")
+        return render(request, "canteen.html",  {
+            'canteen': json.dumps({'number':5}),
+        })

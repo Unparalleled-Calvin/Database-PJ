@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -34,7 +35,7 @@
 
   <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
   <script src="{% static '/js/jquery.js' %}"></script>
-  <script src="{% static '/js/gargets.js' %}"></script>
+  <script src="{% static '/js/gargets.js' %}" type="text/javascript"></script>
 
   <script>
     $('.counter').counterUp({
@@ -103,12 +104,12 @@
           <div class="section-header">
             <h1>餐厅</h1>
           </div>
-          <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
+          <div class="row" id="window_row">
+            <!-- <div class="col-12 col-md-4 col-lg-4">
               <div class="card">
+                <i class="fa fa-window-close fa-lg" align="right" style="cursor:pointer;Margin:7px;"></i>
                 <div class="buttons">
                   <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
                     <div class="center">
                       <input type="submit" id="order_button1"
                         class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
@@ -116,115 +117,7 @@
                   </form>
                 </div>
               </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button2"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button3"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button4"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button5"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button6"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button7"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button8"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    {% csrf_token %}
-                    <div class="center">
-                      <input type="submit" id="order_button9"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+            </div> -->
           </div>
         </section>
       </div>
@@ -232,7 +125,6 @@
   </div>
 </body>
 </head>
-
 
 <script>
   function order(buttonid) {
@@ -258,33 +150,6 @@
       }
     });
   }
-  $("#order_button1").click(function () {
-    order(1);
-  });
-  $("#order_button2").click(function () {
-    order(2);
-  });
-  $("#order_button3").click(function () {
-    order(3);
-  });
-  $("#order_button4").click(function () {
-    order(4);
-  });
-  $("#order_button5").click(function () {
-    order(5);
-  });
-  $("#order_button6").click(function () {
-    order(6);
-  });
-  $("#order_button4").click(function () {
-    order(7);
-  });
-  $("#order_button5").click(function () {
-    order(8);
-  });
-  $("#order_button6").click(function () {
-    order(9);
-  });
 </script>
 
 <script>
@@ -299,13 +164,86 @@
     }
     return false;
   });
-  if(window.screen.width < 600){
+  if (window.screen.width < 600) {
     var target = document.getElementById("sidebar-button");
     $('body').addClass('sidebar-mini');
-    target.style.display="none";
+    target.style.display = "none";
   }
 </script>
 
+
 <script>
-  var name = document.getElementById('name').innerHTML=("Hi, " + getCookieByString('name'))
+  var name = document.getElementById('name').innerHTML = ("Hi, " + getCookieByString('name'))
+  var canteen = {{ canteen| safe }};
+  var number = canteen['number'];
+  var ajaxButtonIdList = "";
+  for (var i = 1; i <= number; i++) {
+    var window_row = document.getElementById("window_row");
+
+    var div1 = document.createElement("div");
+    addClassList(div1, "col-12 col-md-4 col-lg-4");
+
+    var div2 = document.createElement("div");
+    div2.classList.add("card");
+
+    var i1 = document.createElement("i");
+    addClassList(i1, "delete_button fa fa-window-close fa-lg");
+    i1.setAttribute('align', 'right');
+    i1.style = "cursor:pointer;Margin:7px";
+    i1.id = "delete_button" + i.toString();
+
+    var div3 = document.createElement("div");
+    div3.classList.add("buttons");
+
+    var form1 = document.createElement("form");
+    form1.method = "POST";
+    form1.action = "javascript:void(0)";
+
+    var div4 = document.createElement("div");
+    div4.classList.add("center");
+
+    var input1 = document.createElement("input");
+    input1.type = "submit";
+    input1.id = "order_button" + i.toString();
+    input1.value = "点餐";
+    addClassList(input1, "order_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
+
+    div4.appendChild(input1);
+    form1.appendChild(div4);
+    div3.appendChild(form1);
+    div2.appendChild(i1);
+    div2.appendChild(div3);
+    div1.appendChild(div2);
+    window_row.appendChild(div1);
+  }
+  var window_row = document.getElementById("window_row");
+
+  var div1 = document.createElement("div");
+  addClassList(div1, "add_card col-12 col-md-4 col-lg-4");
+
+  var i1 = document.createElement("i");
+  addClassList(i1, "fa fa-plus fa-5x");
+  document.getElementById("window_row").appendChild(i1);
+  i1.style = "cursor:pointer;";
+
+  var div2 = document.createElement("div");
+  div2.classList.add("center");
+
+  div2.appendChild(i1);
+  div1.appendChild(div2);
+  window_row.appendChild(div1);
+
+  if (getCookieByString('ID') != 'admin') {
+    document.getElementsByClassName('delete_button').forEach(element => {
+      element.style.display = 'none';
+    });
+    div1.stype.display = 'none';
+  }
+</script>
+
+
+<script>
+  $(".order_button").on('click', function () {
+    order($(this).attr("id").split('order_button')[1]);
+  });
 </script>
