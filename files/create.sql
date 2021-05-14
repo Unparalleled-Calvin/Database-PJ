@@ -5,7 +5,7 @@ create TABLE person(
 );
 create TABLE teacher(
     ID VARCHAR(11) PRIMARY KEY,
-    age int NOT NULL,
+    birthday DATE NOT NULL,
     rank VARCHAR(20),
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     check(length(ID) = 6)
@@ -92,7 +92,7 @@ create view v_consume as(
         natural join card
         natural join canteen
         natural join consume
-    where valid = 1
+    where valid <> 0
 );
 create view v_record as(
     select ID,
@@ -104,7 +104,7 @@ create view v_record as(
         natural join card
         natural join gate
         natural join record
-    where valid = 1
+    where valid <> 0
 );
 create view v_access as(
     select ID,
@@ -114,18 +114,18 @@ create view v_access as(
     from person
         natural join card
         natural join access
-    where valid = 1
+    where valid <> 0
 );
 create or replace function charge(fID varchar(11), famount numeric(10, 2)) returns numeric as $$ begin
 update card
 set remainingsum = remainingsum + famount
 where fID = card.ID
-    and card.valid = 1;
+    and card.valid <> 0;
 return (
     select remainingsum
     from card
     where fID = card.ID
-        and card.valid = 1
+        and card.valid <> 0
 );
 end;
 $$ language plpgsql;
