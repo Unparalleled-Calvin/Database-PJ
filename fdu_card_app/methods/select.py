@@ -6,6 +6,14 @@ def check_identity(cursor, id, passwd):
     return cursor.rowcount
 
 
+#根据id查询用户名
+def select_v_name(cursor, id):
+    sql = "select name from person natural join card where ID = '{}'".format(id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows[0][0]
+
+
 # 查询食堂消费信息
 def select_v_consume(cursor, id, start, end):
     sql = "select * from v_consume where ID = '{}' and consumetm between '{}' and '{}'".format(

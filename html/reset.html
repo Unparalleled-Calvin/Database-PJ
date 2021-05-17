@@ -46,21 +46,16 @@
                                 <form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="email">邮箱</label>
+                                            <label for="ID">学工号</label>
                                             <div class="input-group">
-                                                <input type="text" id="email" class="form-control col-7" required="">
-                                                <select class="custom-select input-group-append col-5"
-                                                    id="email_postfix" required="" style="border-top-right-radius: .25rem;
-                          border-bottom-right-radius: .25rem;">
-                                                    <option value="@fudan.edu.cn" selected="">@fudan.edu.cn</option>
-                                                </select>
+                                                <input type="text" id="ID" class="form-control col-7" required="">
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="passwd" class="d-block">密码</label>
+                                            <label for="passwd" class="d-block">新密码</label>
                                             <input id="passwd" type="password" class="form-control pwstrength"
                                                 data-indicator="pwindicator" name="passwd" required="">
                                             <div id="pwindicator" class="pwindicator pw-weak">
@@ -99,14 +94,13 @@
     });
 
     function reset() {
-        var email = $("#email").val() + $("#email_postfix").val();
         var csrfToken = $("[name='csrfmiddlewaretoken']").val();
         $.ajax({
             type: "POST",
             url: "/reset",
             dataType: "json",
             data: {
-                email: email,
+                ID: $('#ID').val(),
                 passwd: $("#passwd").val(),
                 repasswd: $("#repasswd").val(),
                 csrfmiddlewaretoken: csrfToken,

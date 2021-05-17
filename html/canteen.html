@@ -173,7 +173,8 @@
 
 
 <script>
-  var name = document.getElementById('name').innerHTML = ("Hi, " + getCookieByString('name'))
+  var name = {{ name | safe }};
+  document.getElementById('name').innerHTML = ("Hi, " + name)
   var canteen = {{ canteen| safe }};
   var number = canteen['number'];
   var ajaxButtonIdList = "";

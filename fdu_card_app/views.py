@@ -15,13 +15,13 @@ cursor = connection.cursor()
 def login(request):
     if request.method == 'POST':
         ret_dict = {}
-        if(request.POST['ID'] == 'admin' and request.POST['passwd'] == 'admin'):
+        if(select.check_identity(cursor, request.POST['ID'], request.POST['passwd'])):
             ret_dict['ret'] = 1
+            ret = JsonResponse(ret_dict)
+            ret.set_cookie('ID', request.POST['ID'], expires = datetime.now() + timedelta(minutes = 5))
         else:
             ret_dict['ret'] = 2
-        ret = JsonResponse(ret_dict)
-        ret.set_cookie('ID', 'admin', expires = datetime.now() + timedelta(minutes = 5))
-        ret.set_cookie('name', 'admin', expires = datetime.now() + timedelta(minutes = 5))
+            ret = JsonResponse(ret_dict)
         return ret
     else:
         if 'ID' in request.COOKIES:
@@ -60,12 +60,12 @@ def register(request):
         elif request.POST['identity'] == 'student' and request.POST['stuclass'] == '' :
             ret_dict['ret'] = 2
             ret_dict['msg'] = '班级不能为空'
-        elif request.POST['identity'] == 'teacher' and request.POST['age'] == '':
+        elif request.POST['identity'] == 'teacher' and request.POST['birth'] == '':
             ret_dict['ret'] = 2
-            ret_dict['msg'] = '年龄不能为空'
+            ret_dict['msg'] = '出生年月不能为空'
         elif request.POST['identity'] == 'others' and request.POST['work'] == '' :
             ret_dict['ret'] = 2
-            ret_dict['msg'] = '工作事由'
+            ret_dict['msg'] = '工作事由不能为空'
         else:
             ret_dict['ret'] = 1
             ret_dict['msg'] = '即将跳转至用户界面'
@@ -76,7 +76,7 @@ def register(request):
                 if request.POST['identity'] == 'student':
                     insert.insert_student(cursor, request.POST['ID'], request.POST['enrolmentdt'], request.POST['stuclass'])
                 elif request.POST['identity'] == 'teacher':
-                    insert.insert_teacher(cursor, request.POST['ID'], request.POST['age'], request.POST['rank'])
+                    insert.insert_teacher(cursor, request.POST['ID'], request.POST['birth'], request.POST['rank'])
                 elif request.POST['identity'] == 'others':
                     insert.insert_others(cursor, request.POST['ID'], request.POST['work'])
             except Exception:
@@ -85,10 +85,8 @@ def register(request):
                 ret_dict['msg'] = '插入失败，该用户已存在'
             else:
                 connection.commit()
-                
         ret = JsonResponse(ret_dict)
         ret.set_cookie('ID', request.POST['ID'], expires = datetime.now() + timedelta(minutes = 5))
-        ret.set_cookie('name', request.POST['name'], expires = datetime.now() + timedelta(minutes = 5))
         return ret
     else:
         return render(request, "register.html")
@@ -96,7 +94,7 @@ def register(request):
 def reset(request):
     if request.method == 'POST':
         ret_dict = {}
-        if request.POST['passwd'] == '' or request.POST['repasswd'] == '' or request.POST['email'].split('@')[0] == '' :
+        if request.POST['passwd'] == '' or request.POST['repasswd'] == '' or request.POST['ID'] == '' :
             ret_dict['ret'] = 2
             ret_dict['msg'] = '必填项均不能为空'
         elif request.POST['passwd'] != request.POST['repasswd']:
@@ -115,7 +113,7 @@ def user(request):
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     else:
-        return render(request, "user.html")
+        return render(request, "user.html", {'name' : "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""})
     
 def canteen(request):
     if 'ID' not in request.COOKIES:
@@ -128,4 +126,5 @@ def canteen(request):
     else:
         return render(request, "canteen.html",  {
             'canteen': json.dumps({'number':5}),
+            'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })

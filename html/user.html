@@ -80,7 +80,7 @@
           <ul class="sidebar-menu">
             <li class="active"><a class="nav-link" href="/user"><i class="fas fa-school"></i>
                 <span>首页</span></a></li>
-            <li ><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
+            <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                 <span>用餐</span></a></li>
             <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
                 <span>离校</span></a></li>
@@ -113,13 +113,14 @@
     }
     return false;
   });
-  if(window.screen.width < 600){
+  if (window.screen.width < 600) {
     var target = document.getElementById("sidebar-button");
     $('body').addClass('sidebar-mini');
-    target.style.display="none";
+    target.style.display = "none";
   }
 </script>
 
 <script>
-  var name = document.getElementById('name').innerHTML=("Hi, " + getCookieByString('name'))
+  var name = {{ name | safe }};
+  document.getElementById('name').innerHTML = ("Hi, " + name)
 </script>

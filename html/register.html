@@ -78,9 +78,10 @@
 
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
-                                            id="age_input">
-                                            <label for="age">年龄</label>
-                                            <input id="age" type="text" class="form-control" name="age" required="">
+                                            id="birth_input">
+                                            <label for="birth">出生年月</label>
+                                            <input id="birth" type="date" class="form-control" name="birth"
+                                                required="">
                                         </div>
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
                                             id="rank_input">
@@ -165,7 +166,7 @@
                 identity: $("#identity_postfix").val(),
                 enrolmentdt: $("#enrolmentdt").val(),
                 stuclass: $('#stuclass').val(),
-                age: $("#age").val(),
+                birth: $("#birth").val(),
                 rank: $("#rank").val(),
                 work: $("#work").val(),
                 csrfmiddlewaretoken: csrfToken,
@@ -202,14 +203,14 @@
 <script>
     function show() {
         var sel_val = document.getElementById('identity_postfix').value;
-        var age_input = document.getElementById('age_input');
+        var birth_input = document.getElementById('birth_input');
         var rank_input = document.getElementById('rank_input');
         var enrolmentdt_input = document.getElementById('enrolmentdt_input');
         var stuclass_input = document.getElementById('stuclass_input');
         var work_input = document.getElementById('work_input');
-        if (sel_val == 'teacher') { age_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; }
-        if (sel_val == 'student') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none';  stuclass_input.style.display = 'inline';}
-        if (sel_val == 'others') { age_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; }
+        if (sel_val == 'teacher') { birth_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; }
+        if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none';  stuclass_input.style.display = 'inline';}
+        if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; }
     }
 </script>
 
