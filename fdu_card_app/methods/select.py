@@ -1,3 +1,18 @@
+# 辅助函数
+def dict(keylist, val):
+    ret = {}
+    for i in range(len(keylist)):
+        ret[keylist[i]] = val[val[i]]
+    return ret
+
+
+def ret(keylist, rows):
+    data = []
+    for row in rows:
+        data.append(dict(keylist, row))
+    return data
+
+
 # 判断登录的用户名与密码是否正确
 def check_identity(cursor, id, passwd):
     sql = "select ID, passwd from person natural join card where ID = '{}' and passwd = '{}' and valid <> 0".format(
@@ -6,9 +21,10 @@ def check_identity(cursor, id, passwd):
     return cursor.rowcount
 
 
-#根据id查询用户名
+# 根据id查询用户名
 def select_v_name(cursor, id):
-    sql = "select name from person natural join card where ID = '{}'".format(id)
+    sql = "select name from person where ID = '{}'".format(
+        id)
     cursor.execute(sql)
     rows = cursor.fetchall()
     return rows[0][0]
@@ -20,7 +36,10 @@ def select_v_consume(cursor, id, start, end):
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'wname', 'cuisineid', 'consumetm', 'amount']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '餐厅', '菜肴', '时间', '金额']
+    return (heads, [keylist], [data])
 
 
 # 查询校门进出信息
@@ -29,7 +48,10 @@ def select_v_record(cursor, id, start, end):
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'gname', 'recordtm', 'inout']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '校门', '时间', '进/出']
+    return (heads, [keylist], [data])
 
 
 # 查询宿舍门禁信息
@@ -38,7 +60,10 @@ def select_v_access(cursor, id, start, end):
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'dno', 'accesstm', 'amount']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '宿舍', '时间']
+    return (heads, [keylist], [data])
 
 
 # 查询所在宿舍信息
@@ -47,7 +72,10 @@ def select_dormitory(cursor, id):
         id)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['dno', 'dadmin', 'dtel', 'dfloor']
+    data = ret(keylist, rows)
+    heads = ['宿舍', '负责人', '电话', '层数']
+    return (heads, [keylist], [data])
 
 
 # 查询各餐厅信息
@@ -55,7 +83,10 @@ def select_canteen(cursor):
     sql = "select * from canteen"
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['wno', 'wname', 'wadmin', 'wtel']
+    data = ret(keylist, rows)
+    heads = ['餐厅号', '餐厅', '负责人', '电话']
+    return (heads, [keylist], [data])
 
 
 # 查询各校门信息
@@ -63,16 +94,22 @@ def select_gate(cursor):
     sql = "select * from gate"
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['gno', 'gname', 'gadmin', 'gtel']
+    data = ret(keylist, rows)
+    heads = ['校门号', '校门', '负责人', '电话']
+    return (heads, [keylist], [data])
 
 
 # 查询一卡通信息
 def select_information(cursor, id):
-    sql = "select * from person natural join card where valid <> 0 and ID = '{}'".format(
+    sql = "select id, name, remaingsum, carddate, cdno, valid from person natural join card where valid <> 0 and ID = '{}'".format(
         id)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'remaingsum', 'carddate', 'cdno', 'valid']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '余额', '开卡日期', '宿舍', '有效状态']
+    return (heads, [keylist], [data])
 
 
 # 以下功能仅提供给admin
@@ -82,7 +119,10 @@ def select_teacher(cursor):
     sql = "select * from person natural join teacher"
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'birthday', 'rank']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '出生日期', '职称']
+    return (heads, [keylist], [data])
 
 
 # 查询所有学生信息
@@ -90,7 +130,10 @@ def select_student(cursor):
     sql = "select * from person natural join student"
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'enrolmentdt', 'class']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '入学日期', '班级']
+    return (heads, [keylist], [data])
 
 
 # 查询所有其他人员信息
@@ -98,7 +141,10 @@ def select_others(cursor):
     sql = "select * from person natural join others"
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['id', 'name', 'work']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '工作']
+    return (heads, [keylist], [data])
 
 
 # 查询各餐厅营业额
@@ -107,4 +153,7 @@ def select_profit(cursor, start, end):
         start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows
+    keylist = ['wno', 'wname', 'profit']
+    data = ret(keylist, rows)
+    heads = ['餐厅号', '餐厅', '营业额']
+    return (heads, [keylist], [data])
