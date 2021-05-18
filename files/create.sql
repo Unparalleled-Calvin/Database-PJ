@@ -1,8 +1,15 @@
+--author：叶俊杰 19307130140
+--
+--内容：数据库表格建立（共11张）、视图（共3张）、函数（共1个）、过程（共2个）、触发器（共2个）
+--
+--
+--人员信息表
 create TABLE person(
     ID VARCHAR(11) PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     check(length(ID) in (5, 6, 11))
 );
+--教师信息表
 create TABLE teacher(
     ID VARCHAR(11) PRIMARY KEY,
     birthday DATE NOT NULL,
@@ -10,6 +17,7 @@ create TABLE teacher(
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     check(length(ID) = 6)
 );
+--学生信息表
 create TABLE student(
     ID VARCHAR(11) PRIMARY KEY,
     enrolmentdt DATE NOT NULL,
@@ -17,18 +25,21 @@ create TABLE student(
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     check(length(ID) = 11)
 );
+--其他人员信息表
 create TABLE others(
     ID VARCHAR(11) PRIMARY KEY,
     work VARCHAR(20) NOT NULL,
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     check(length(ID) = 5)
 );
+--宿舍信息表
 create TABLE domitory(
     dno INT PRIMARY KEY,
     dadmin VARCHAR(50) NOT NULL,
     dtel VARCHAR(11) NOT NULL,
     dfloor INT NOT NULL
 );
+--一卡通信息表
 create TABLE card(
     ID VARCHAR(11),
     remainingsum NUMERIC(10, 2) DEFAULT 0,
@@ -41,18 +52,21 @@ create TABLE card(
     foreign key(cdno) REFERENCES domitory(dno) ON DELETE
     SET DEFAULT ON UPDATE CASCADE
 );
+--餐厅信息表
 create TABLE canteen(
     wno INT PRIMARY KEY,
     wname VARCHAR(50) NOT NULL,
     wadmin VARCHAR(50) NOT NULL,
     wtel VARCHAR(11) NOT NULL
 );
+--校门信息表
 create TABLE gate(
     gno INT PRIMARY KEY,
     gname VARCHAR(50) NOT NULL,
     gadmin VARCHAR(50) NOT NULL,
     gtel VARCHAR(11) NOT NULL
 );
+--消费信息表
 create TABLE consume(
     wno INT NOT NULL,
     ID VARCHAR(11) NOT NULL,
@@ -63,6 +77,7 @@ create TABLE consume(
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     foreign key(wno) REFERENCES canteen(wno) ON DELETE CASCADE ON UPDATE CASCADE
 );
+--进出校记录表
 create TABLE record(
     ID VARCHAR(11) NOT NULL,
     gno INT NOT NULL,
@@ -73,6 +88,7 @@ create TABLE record(
     foreign key(gno) REFERENCES gate(gno) ON DELETE CASCADE ON UPDATE CASCADE,
     check(inout in('in', 'out'))
 );
+--门禁信息表
 create TABLE access(
     ID VARCHAR(11) NOT NULL,
     dno int NOT NULL,
@@ -81,6 +97,7 @@ create TABLE access(
     foreign key(ID) REFERENCES person(ID) ON DELETE CASCADE ON UPDATE CASCADE,
     foreign key(dno) REFERENCES domitory(dno) ON DELETE CASCADE ON UPDATE CASCADE
 );
+--视图：消费信息
 create view v_consume as(
     select ID,
         name,
@@ -94,6 +111,7 @@ create view v_consume as(
         natural join consume
     where valid <> 0
 );
+--视图：进出校记录
 create view v_record as(
     select ID,
         name,
@@ -106,6 +124,7 @@ create view v_record as(
         natural join record
     where valid <> 0
 );
+--视图：门禁记录
 create view v_access as(
     select ID,
         name,
@@ -116,6 +135,7 @@ create view v_access as(
         natural join access
     where valid <> 0
 );
+--函数：一卡通余额充值
 create or replace function charge(fID varchar(11), famount numeric(10, 2)) returns numeric as $$ begin
 update card
 set remainingsum = remainingsum + famount
@@ -129,6 +149,7 @@ return (
 );
 end;
 $$ language plpgsql;
+--过程：食堂就餐
 create or replace procedure eat(
         in pID varchar(11),
         in pwno int,
@@ -155,6 +176,7 @@ values(pwno, pID, pcuisineid, pamount);
 end if;
 end;
 $$ language plpgsql;
+--过程：进出校门
 create or replace procedure in_and_out(
         in pID varchar(11),
         in pgno int,
@@ -175,6 +197,7 @@ values(pID, pgno, pinout);
 end if;
 end;
 $$ language plpgsql;
+--过程：回寝
 create or replace procedure back(
         in pID varchar(11),
         in pdno int
@@ -205,22 +228,24 @@ values(pID, pdno);
 end if;
 end;
 $$ language plpgsql;
+--触发器：消费后及时更新余额
 create or replace function consume_trigger() returns trigger as $$ begin
 update card
 set remainingsum = remainingsum - new.amount
 where card.ID = new.ID
     and card.valid = 1;
-return new;
+return NULL;
 end;
 $$ language plpgsql;
 create trigger consume_update
 after
 insert on consume for each row execute procedure consume_trigger();
+--触发器：卡挂失后及时将原卡置为无效
 create or replace function valid_trigger() returns trigger as $$ begin
 update card
 set valid = 0
 where card.ID = new.ID;
-return new;
+return NULL;
 end;
 $$ language plpgsql;
 create trigger update_valid before
