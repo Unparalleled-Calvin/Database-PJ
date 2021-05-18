@@ -2,7 +2,7 @@
 def dict(keylist, val):
     ret = {}
     for i in range(len(keylist)):
-        ret[keylist[i]] = val[val[i]]
+        ret[keylist[i]] = val[i]
     return ret
 
 
