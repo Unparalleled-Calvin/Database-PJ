@@ -8,6 +8,7 @@ import json
 sys.path.append('.\\fdu_card_app')
 from methods import select
 from methods import insert
+from methods import update
 
 cursor = connection.cursor()
 
@@ -113,12 +114,25 @@ def user(request):
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     else:
-        return render(request, "user.html", {'name' : "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""})
+        if request.method == 'POST':
+            ret_dict = {}
+            try:
+                remainingsum = update.update_remainingsum(cursor, request.COOKIES['ID'], request.POST['amount'])
+                ret_dict["remainingsum"] = str(remainingsum)
+                ret_dict['ret'] = 1
+            except Exception:
+                ret_dict['ret'] = 0
+            return JsonResponse(ret_dict)
+        else:
+            data = select.select_information(cursor, request.COOKIES['ID'])[2][0][0]
+            data['name'] = "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
+            return render(request, "user.html", data)
     
 def canteen(request):
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
+        insert.insert_consume(cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount'])
         ret_dict = {}
         ret_dict['ret'] = 1
         ret = JsonResponse(ret_dict)

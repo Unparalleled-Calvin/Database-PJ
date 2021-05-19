@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
 <html lang="en">
 
 <head>
@@ -29,6 +30,9 @@
   <script src="{% static '/js/jquery.min.js' %}"></script>
   <script src="{% static '/js/bootstrap.min.js' %}"></script>
   <!-- Counter Up  -->
+
+  <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
+  <script src="{% static '/js/jquery.js' %}"></script>
   <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
   <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
   <script src="{% static '/js/gargets.js' %}"></script>
@@ -95,6 +99,37 @@
             <h1>首页</h1>
           </div>
         </section>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="card card-statistic-2">
+            <div class="card-icon shadow-warning bg-warning">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div class="card-wrap">
+              <div class="card-header">
+                <h4>卡内余额</h4>
+              </div>
+              <div class="card-body">
+                <span class="counter" id="remainingsum">{{ remainingsum | safe }}</span>元
+              </div>
+              <div class="card-stats">
+                <div class="card-stats-title" style="padding-top: 0;padding-bottom: 4px;">
+                  <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item active" aria-current="page">今日已用: 0 元</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+              <div class="buttons">
+                <form action="javascript:void(0);" method="POST">
+                  <div align="center">
+                    <input type="submit" id="charge_button" class="btn btn-icon icon-left btn-primary" value="充值" />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -112,6 +147,41 @@
       body.removeClass('sidebar-show');
     }
     return false;
+  });
+  $('#charge_button').click(function () {
+    swal({
+      title: '充值金额',
+      input: 'text',
+      showCancelButton: true
+    }).then(function (result) {
+      if ("value" in result) {
+        if (/^[0-9]+[.]*[0-9][0-9]$/.test(result["value"])) {
+          var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+          $.ajax({
+            type: "POST",
+            url: "/user",
+            dataType: "json",
+            data: {
+              amount: Number(result["value"]),
+              csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+              if (data.ret) {
+                swal('充值成功', "您的余额已更新", 'success');
+                $("#remainingsum")[0].innerHTML = data.remainingsum
+              }
+              else {
+                swal('充值失败', "卡内余额不得超过100000000元", 'error');
+              }
+            }
+          });
+        }
+        else {
+          swal('出错了', "输入格式错误", 'error');
+        }
+      }
+
+    })
   });
   if (window.screen.width < 600) {
     var target = document.getElementById("sidebar-button");

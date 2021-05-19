@@ -127,7 +127,7 @@
 </head>
 
 <script>
-  function order(buttonid) {
+  function order(wno, cuisineid, amount) {
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
 
     $.ajax({
@@ -135,7 +135,9 @@
       url: "canteen",
       dataType: "json",
       data: {
-        cuisineid: buttonid,
+        wno: wno,
+        cuisineid: cuisineid,
+        amount: amount,
         csrfmiddlewaretoken: csrfToken,
       },
       success: function (data) {
@@ -178,6 +180,7 @@
   var canteen = {{ canteen| safe }};
   var number = canteen['number'];
   var ajaxButtonIdList = "";
+  var cuisineList = [1, 2, 3, 4, 5, 6, 7, 8].sort(() => { return 0.5 - Math.random(); })
   for (var i = 1; i <= number; i++) {
     var window_row = document.getElementById("window_row");
 
@@ -186,6 +189,9 @@
 
     var div2 = document.createElement("div");
     div2.classList.add("card");
+    var cuisineid = cuisineList[i]
+    addClassList(div2, "cuisine_" + cuisineid);
+
 
     var i1 = document.createElement("i");
     addClassList(i1, "delete_button fa fa-window-close fa-lg");
@@ -203,6 +209,10 @@
     var div4 = document.createElement("div");
     div4.classList.add("center");
 
+    var img = document.createElement("img");
+    var filePath = '/images/cuisine/' + cuisineid + '.jpg';
+    img.src = "/static" + filePath
+
     var input1 = document.createElement("input");
     input1.type = "submit";
     input1.id = "order_button" + i.toString();
@@ -213,6 +223,7 @@
     form1.appendChild(div4);
     div3.appendChild(form1);
     div2.appendChild(i1);
+    div2.appendChild(img);
     div2.appendChild(div3);
     div1.appendChild(div2);
     window_row.appendChild(div1);
@@ -223,7 +234,7 @@
   addClassList(div1, "add_card col-12 col-md-4 col-lg-4");
 
   var i1 = document.createElement("i");
-  addClassList(i1, "fa fa-plus fa-5x");
+  addClassList(i1, "fa fa-plus fa-5x add_button");
   document.getElementById("window_row").appendChild(i1);
   i1.style = "cursor:pointer;";
 
@@ -235,16 +246,22 @@
   window_row.appendChild(div1);
 
   if (getCookieByString('ID') != 'admin') {
-    document.getElementsByClassName('delete_button').forEach(element => {
+    Array.from(document.getElementsByClassName('delete_button')).forEach(element => {
       element.style.display = 'none';
     });
-    div1.stype.display = 'none';
+    Array.from(document.getElementsByClassName('add_button')).forEach(element => {
+      element.style.display = 'none';
+    });
   }
 </script>
 
 
 <script>
   $(".order_button").on('click', function () {
-    order($(this).attr("id").split('order_button')[1]);
+    var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
+    order($(this).attr("id").split('order_button')[1], cuisineid, 5 + Math.floor(Math.random() * 5));
+  });
+  $(".delete_button").on('click', function () {
+    ($(this)[0]).parentNode.parentNode.style.display = 'none';
   });
 </script>
