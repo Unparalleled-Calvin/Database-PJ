@@ -102,11 +102,11 @@ def select_gate(cursor):
 
 # 查询一卡通信息
 def select_information(cursor, id):
-    sql = "select id, name, remaingsum, carddate, cdno, valid from person natural join card where valid <> 0 and ID = '{}'".format(
+    sql = "select id, name, remainingsum, carddate, cdno, valid from person natural join card where valid <> 0 and ID = '{}'".format(
         id)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    keylist = ['id', 'name', 'remaingsum', 'carddate', 'cdno', 'valid']
+    keylist = ['id', 'name', 'remainingsum', 'carddate', 'cdno', 'valid']
     data = ret(keylist, rows)
     heads = ['学工号', '姓名', '余额', '开卡日期', '宿舍', '有效状态']
     return (heads, [keylist], [data])
