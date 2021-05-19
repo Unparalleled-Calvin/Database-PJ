@@ -234,7 +234,7 @@ update card
 set remainingsum = remainingsum - new.amount
 where card.ID = new.ID
     and card.valid = 1;
-return NULL;
+return new;
 end;
 $$ language plpgsql;
 create trigger consume_update
@@ -245,7 +245,7 @@ create or replace function valid_trigger() returns trigger as $$ begin
 update card
 set valid = 0
 where card.ID = new.ID;
-return NULL;
+return new;
 end;
 $$ language plpgsql;
 create trigger update_valid before
