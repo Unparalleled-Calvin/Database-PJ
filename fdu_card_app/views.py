@@ -9,7 +9,9 @@ sys.path.append('.\\fdu_card_app')
 from methods import select
 from methods import insert
 from methods import update
-
+import psycopg2
+conn = psycopg2.connect(database="dbpj", user="postgres", password="admin")
+_cursor = conn.cursor()
 cursor = connection.cursor()
 
 # Create your views here.        
@@ -61,6 +63,9 @@ def register(request):
         elif request.POST['identity'] == 'student' and request.POST['stuclass'] == '' :
             ret_dict['ret'] = 2
             ret_dict['msg'] = '班级不能为空'
+        elif request.POST['identity'] == 'student' and request.POST['dormitory'] == '' :
+            ret_dict['ret'] = 2
+            ret_dict['msg'] = '寝室楼不能为空'
         elif request.POST['identity'] == 'teacher' and request.POST['birth'] == '':
             ret_dict['ret'] = 2
             ret_dict['msg'] = '出生年月不能为空'
@@ -73,12 +78,14 @@ def register(request):
         if ret_dict['ret'] == 1:
             try:
                 insert.insert_person(cursor, request.POST['ID'], request.POST['name'])
-                insert.insert_card(cursor, request.POST['ID'])
                 if request.POST['identity'] == 'student':
+                    insert.insert_card(cursor, request.POST['ID'], request.POST['dormitory'])
                     insert.insert_student(cursor, request.POST['ID'], request.POST['enrolmentdt'], request.POST['stuclass'])
                 elif request.POST['identity'] == 'teacher':
+                    insert.insert_card(cursor, request.POST['ID'])
                     insert.insert_teacher(cursor, request.POST['ID'], request.POST['birth'], request.POST['rank'])
                 elif request.POST['identity'] == 'others':
+                    insert.insert_card(cursor, request.POST['ID'])
                     insert.insert_others(cursor, request.POST['ID'], request.POST['work'])
             except Exception:
                 connection.rollback()
@@ -133,12 +140,30 @@ def canteen(request):
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
         ret_dict = {}
-        ret_dict['ret'] = insert.insert_consume(cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount'])
+        ret_dict['ret'] = int(insert.insert_consume(conn, _cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount']))
         ret = JsonResponse(ret_dict)
         return ret
     else:
-        canteen_number = len(select.select_canteen(cursor)[2][0])
         return render(request, "canteen.html",  {
-            'canteen': json.dumps({'number':canteen_number}),
+            'canteen': json.dumps({'number':len(select.select_canteen(cursor)[2][0])}),
+            'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
+        })
+
+def access(request):
+    if 'ID' not in request.COOKIES:
+        return HttpResponseRedirect('/login')
+    elif request.method == 'POST':
+        ret_dict = {}
+        ret_dict['ret'] = int(insert.insert_access(conn, _cursor, request.COOKIES['ID'], request.POST['dno']))
+        ret = JsonResponse(ret_dict)
+        return ret
+    else:
+        dList = select.select_dormitory(cursor)[2][0]
+        dnoList = []
+        for each in dList:
+            dnoList.append(each['dno'])
+        dnoList.sort()
+        return render(request, "access.html",  {
+            'dormitory': json.dumps({'number':len(dList), "dnoList":dnoList}),
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })

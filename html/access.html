@@ -90,11 +90,11 @@
           <ul class="sidebar-menu">
             <li><a class="nav-link" href="/user"><i class="fas fa-school"></i>
                 <span>首页</span></a></li>
-            <li class="active"><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
+            <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                 <span>用餐</span></a></li>
             <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
                 <span>离校</span></a></li>
-            <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
+            <li class="active"><a class="nav-link" href="access"><i class="fas fa-building"></i>
                 <span>回寝</span></a></li>
           </ul>
         </aside>
@@ -102,7 +102,7 @@
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>餐厅</h1>
+            <h1>园区</h1>
           </div>
           <div class="row" id="window_row">
             <!-- <div class="col-12 col-md-4 col-lg-4">
@@ -127,33 +127,6 @@
 </head>
 
 <script>
-  function order(wno, cuisineid, amount) {
-    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-    $.ajax({
-      type: "POST",
-      url: "canteen",
-      dataType: "json",
-      data: {
-        wno: wno,
-        cuisineid: cuisineid,
-        amount: amount,
-        csrfmiddlewaretoken: csrfToken,
-      },
-      success: function (data) {
-        if (data.ret != 0) {
-          var Msg = '节约光荣，浪费可耻';
-          swal('点餐成功', Msg, 'success');
-        }
-        else {
-          var Msg = '余额不足，请尝试充值后重新点餐';
-          swal('错误', Msg, 'error');
-        }
-      }
-    });
-  }
-</script>
-
-<script>
   $('#sidebar-button').click(function () {
     var body = $('body')
     if (body.hasClass('sidebar-mini')) {
@@ -176,9 +149,9 @@
 <script>
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
-  var canteen = {{ canteen| safe }};
-  var number = canteen['number'];
-  var cuisineList = [1, 2, 3, 4, 5, 6, 7, 8].sort(() => { return 0.5 - Math.random(); })
+  var dormitory = {{ dormitory| safe }};
+  var number = dormitory['number'];
+  var dnoList = dormitory['dnoList']
   for (var i = 1; i <= number; i++) {
     var window_row = document.getElementById("window_row");
 
@@ -187,15 +160,12 @@
 
     var div2 = document.createElement("div");
     div2.classList.add("card");
-    var cuisineid = cuisineList[i-1]
-    addClassList(div2, "cuisine_" + cuisineid);
-
 
     var i1 = document.createElement("i");
     addClassList(i1, "delete_button fa fa-window-close fa-lg");
     i1.setAttribute('align', 'right');
     i1.style = "cursor:pointer;Margin:7px";
-    i1.id = "delete_button" + i.toString();
+    i1.id = "delete_button" + dnoList[i-1]
 
     var div3 = document.createElement("div");
     div3.classList.add("buttons");
@@ -207,28 +177,21 @@
     var div4 = document.createElement("div");
     div4.classList.add("center");
 
-    var img = document.createElement("img");
-    var filePath = '/images/cuisine/' + cuisineid + '.jpg';
-    img.src = "/static" + filePath
-
     var input1 = document.createElement("input");
     input1.type = "submit";
-    input1.id = "order_button" + i.toString();
-    input1.value = "点餐";
-    addClassList(input1, "order_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
+    input1.id = "valid_button" + dnoList[i-1]
+    input1.value = "验证";
+    addClassList(input1, "valid_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
 
-    var price_div = document.createElement("h3");
-    var random_price = String(5 + Math.floor(Math.random() * 5));
-    price_div.innerText = random_price + ".00元";
-    price_div.align = "center"
-    addClassList(price_div, random_price) 
+    var dno_div = document.createElement("h3");
+    dno_div.innerText = String(dnoList[i-1]) + "号楼";
+    dno_div.align = "center"
 
     div4.appendChild(input1);
     form1.appendChild(div4);
     div3.appendChild(form1);
     div2.appendChild(i1);
-    div2.appendChild(img);
-    div2.appendChild(price_div);
+    div2.appendChild(dno_div);
     div2.appendChild(div3);
     div1.appendChild(div2);
     window_row.appendChild(div1);
@@ -260,12 +223,33 @@
   }
 </script>
 
+<script>
+  function validate(dno) {
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    $.ajax({
+      type: "POST",
+      url: "access",
+      dataType: "json",
+      data: {
+        dno: dno,
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data.ret != 0) {
+          swal('验证成功', "欢迎回到寝室楼！", 'success');
+        }
+        else {
+          swal('验证失败', "您不属于该寝室楼", 'error');
+        }
+      }
+    });
+  }
+</script>
 
 <script>
-  $(".order_button").on('click', function () {
-    var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
-    var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[2].className;
-    order($(this).attr("id").split('order_button')[1], cuisineid, price);
+  $(".valid_button").on('click', function () {
+    var dno = $(this).attr("id").split('valid_button')[1];
+    validate(dno);
   });
   $(".delete_button").on('click', function () {
     ($(this)[0]).parentNode.parentNode.style.display = 'none';

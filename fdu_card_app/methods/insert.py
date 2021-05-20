@@ -32,7 +32,7 @@ def insert_domitory(cursor, dno, dadmin, dtel, dfloor):
     return cursor.rowcount
 
 
-def insert_card(cursor, id, remainingsum=0, carddate='now()', passwd='000000', cdno='null', valid=1):
+def insert_card(cursor, id, cdno='null', remainingsum=0, carddate='now()', passwd='000000', valid=1):
     sql = "insert into card values('{}', '{}', '{}', '{}', {}, '{}')".format(
         id, remainingsum, carddate, passwd, cdno, valid)
     cursor.execute(sql)
@@ -53,11 +53,12 @@ def insert_gate(cursor, gno, gname, gadmin, gtel):
     return cursor.rowcount
 
 
-def insert_consume(cursor, wno, ID, cuisineid, amount):
+def insert_consume(conn, cursor, wno, ID, cuisineid, amount):
+    len1 = len(conn.notices)
     sql = "call eat('{}', '{}', '{}', '{}')".format(
         ID, wno, cuisineid, amount)
     cursor.execute(sql)
-    return cursor.rowcount
+    return not (len(conn.notices) - len1)
 
 
 def insert_record(cursor, ID, gno, inout):
@@ -67,8 +68,12 @@ def insert_record(cursor, ID, gno, inout):
     return cursor.rowcount
 
 
-def insert_access(cursor, ID, dno):
-    sql = "call in_and_out('{}', '{}')".format(
+def insert_access(conn, cursor, ID, dno):
+    len1 = len(conn.notices)
+    sql = "call back('{}', '{}')".format(
         ID, dno)
-    cursor.execute(sql)
-    return cursor.rowcount
+    try:
+        cursor.execute(sql)
+    except Exception:
+        conn.rollback()
+    return not (len(conn.notices) - len1)

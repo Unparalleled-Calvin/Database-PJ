@@ -46,18 +46,18 @@
                                 <form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="name">姓名</label>
-                                            <input id="name" type="text" class="form-control" name="name" required=""
-                                                autofocus="">
+                                            <label for="ID">学工号</label>
+                                            <div class="input-group">
+                                                <input type="text" id="ID" class="form-control col-7" required="">
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="ID">学工号</label>
-                                            <div class="input-group">
-                                                <input type="text" id="ID" class="form-control col-7" required="">
-                                            </div>
+                                            <label for="name">姓名</label>
+                                            <input id="name" type="text" class="form-control col-7" name="name" required=""
+                                                autofocus="">
                                         </div>
                                     </div>
 
@@ -110,6 +110,12 @@
                                             id="stuclass_input">
                                             <label for="stuclass">班级</label>
                                             <input id="stuclass" type="text" class="form-control" name="stuclass"
+                                                required="">
+                                        </div>
+                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:inline;"
+                                            id="dormitory_input">
+                                            <label for="dormitory">寝室</label>
+                                            <input id="dormitory" type="text" class="form-control" name="dormitory"
                                                 required="">
                                         </div>
                                     </div>
@@ -166,6 +172,7 @@
                 identity: $("#identity_postfix").val(),
                 enrolmentdt: $("#enrolmentdt").val(),
                 stuclass: $('#stuclass').val(),
+                dormitory: $('#dormitory').val(),
                 birth: $("#birth").val(),
                 rank: $("#rank").val(),
                 work: $("#work").val(),
@@ -208,9 +215,9 @@
         var enrolmentdt_input = document.getElementById('enrolmentdt_input');
         var stuclass_input = document.getElementById('stuclass_input');
         var work_input = document.getElementById('work_input');
-        if (sel_val == 'teacher') { birth_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; }
-        if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none';  stuclass_input.style.display = 'inline';}
-        if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; }
+        if (sel_val == 'teacher') { birth_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none"}
+        if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none';  stuclass_input.style.display = 'inline'; dormitory_input.style.display = "inline"}
+        if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none"}
     }
 </script>
 

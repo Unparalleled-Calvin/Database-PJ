@@ -22,3 +22,14 @@ INSERT INTO public.canteen(
 INSERT INTO public.canteen(
 	wno, wname, wadmin, wtel)
 	VALUES (8, '窗口8', '王经理', '15377778888');
+
+
+INSERT INTO public.domitory(
+	dno, dadmin, dtel, dfloor)
+	VALUES ('2', '李阿姨', '18911112222', 5);
+INSERT INTO public.domitory(
+	dno, dadmin, dtel, dfloor)
+	VALUES ('5', '周阿姨', '18933332222', 2);
+INSERT INTO public.domitory(
+	dno, dadmin, dtel, dfloor)
+	VALUES ('8', '吴阿姨', '18944442222', 3);

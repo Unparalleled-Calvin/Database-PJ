@@ -67,9 +67,20 @@ def select_v_access(cursor, id, start, end):
 
 
 # 查询所在宿舍信息
-def select_dormitory(cursor, id):
+def check_dormitory(cursor, id):
     sql = "select dno, dadmin, dtel, dfloor from domitory, card where domitory.cno = card.cdno and card.ID = '{}'".format(
         id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    keylist = ['dno', 'dadmin', 'dtel', 'dfloor']
+    data = ret(keylist, rows)
+    heads = ['宿舍', '负责人', '电话', '层数']
+    return (heads, [keylist], [data])
+
+
+# 查询各宿舍信息
+def select_dormitory(cursor):
+    sql = "select dno, dadmin, dtel, dfloor from domitory"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['dno', 'dadmin', 'dtel', 'dfloor']
