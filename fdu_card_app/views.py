@@ -132,13 +132,13 @@ def canteen(request):
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
-        insert.insert_consume(cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount'])
         ret_dict = {}
-        ret_dict['ret'] = 1
+        ret_dict['ret'] = insert.insert_consume(cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount'])
         ret = JsonResponse(ret_dict)
         return ret
     else:
+        canteen_number = len(select.select_canteen(cursor)[2][0])
         return render(request, "canteen.html",  {
-            'canteen': json.dumps({'number':5}),
+            'canteen': json.dumps({'number':canteen_number}),
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })

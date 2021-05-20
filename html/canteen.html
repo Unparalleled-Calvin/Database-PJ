@@ -129,7 +129,6 @@
 <script>
   function order(wno, cuisineid, amount) {
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-
     $.ajax({
       type: "POST",
       url: "canteen",
@@ -141,12 +140,12 @@
         csrfmiddlewaretoken: csrfToken,
       },
       success: function (data) {
-        if (data.ret == 1) {
+        if (data.ret != -1) {
           var Msg = '节约光荣，浪费可耻';
           swal('点餐成功', Msg, 'success');
         }
         else {
-          var Msg = '请尝试重新点餐';
+          var Msg = '余额不足，请尝试充值后重新点餐';
           swal('错误', Msg, 'error');
         }
       }
@@ -178,6 +177,7 @@
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
   var canteen = {{ canteen| safe }};
+  console.log(canteen)
   var number = canteen['number'];
   var ajaxButtonIdList = "";
   var cuisineList = [1, 2, 3, 4, 5, 6, 7, 8].sort(() => { return 0.5 - Math.random(); })
@@ -189,7 +189,7 @@
 
     var div2 = document.createElement("div");
     div2.classList.add("card");
-    var cuisineid = cuisineList[i]
+    var cuisineid = cuisineList[i-1]
     addClassList(div2, "cuisine_" + cuisineid);
 
 
@@ -219,11 +219,18 @@
     input1.value = "点餐";
     addClassList(input1, "order_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
 
+    var price_div = document.createElement("h3");
+    var random_price = String(5 + Math.floor(Math.random() * 5));
+    price_div.innerText = random_price + ".00元";
+    price_div.align = "center"
+    addClassList(price_div, random_price) 
+
     div4.appendChild(input1);
     form1.appendChild(div4);
     div3.appendChild(form1);
     div2.appendChild(i1);
     div2.appendChild(img);
+    div2.appendChild(price_div);
     div2.appendChild(div3);
     div1.appendChild(div2);
     window_row.appendChild(div1);
@@ -259,7 +266,8 @@
 <script>
   $(".order_button").on('click', function () {
     var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
-    order($(this).attr("id").split('order_button')[1], cuisineid, 5 + Math.floor(Math.random() * 5));
+    var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[2].className;
+    order($(this).attr("id").split('order_button')[1], cuisineid, price);
   });
   $(".delete_button").on('click', function () {
     ($(this)[0]).parentNode.parentNode.style.display = 'none';
