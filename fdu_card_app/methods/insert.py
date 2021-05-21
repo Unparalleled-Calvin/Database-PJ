@@ -1,3 +1,11 @@
+# 辅助函数
+def select_count(cursor, table):
+    sql = "select count(*) from {}".format(table)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows[0][0]
+
+
 def insert_person(cursor, id, name):
     sql = "insert into person values('{}', '{}')".format(id, name)
     cursor.execute(sql)
@@ -53,27 +61,28 @@ def insert_gate(cursor, gno, gname, gadmin, gtel):
     return cursor.rowcount
 
 
-def insert_consume(conn, cursor, wno, ID, cuisineid, amount):
-    len1 = len(conn.notices)
+def insert_consume(cursor, wno, ID, cuisineid, amount):
+    count1 = select_count(cursor, 'consume')
     sql = "call eat('{}', '{}', '{}', '{}')".format(
         ID, wno, cuisineid, amount)
     cursor.execute(sql)
-    return not (len(conn.notices) - len1)
+    count2 = select_count(cursor, 'consume')
+    return (count2 - count1)
 
 
 def insert_record(cursor, ID, gno, inout):
+    count1 = select_count(cursor, 'record')
     sql = "call in_and_out('{}', '{}', '{}')".format(
         ID, gno, inout)
     cursor.execute(sql)
-    return cursor.rowcount
+    count2 = select_count(cursor, 'record')
+    return (count2 - count1)
 
 
-def insert_access(conn, cursor, ID, dno):
-    len1 = len(conn.notices)
+def insert_access(cursor, ID, dno):
+    count1 = select_count(cursor, 'access')
     sql = "call back('{}', '{}')".format(
         ID, dno)
-    try:
-        cursor.execute(sql)
-    except Exception:
-        conn.rollback()
-    return not (len(conn.notices) - len1)
+    cursor.execute(sql)
+    count2 = select_count(cursor, 'access')
+    return (count2 - count1)
