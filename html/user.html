@@ -152,7 +152,9 @@
     swal({
       title: '充值金额',
       input: 'text',
-      showCancelButton: true
+      confirmButtonText: "氪就完事了",
+      cancelButtonText: "让我再想想",
+      showCancelButton: true,
     }).then(function (result) {
       if ("value" in result) {
         if (/^[0-9]+[.]?[0-9]?[0-9]?$/.test(result["value"])) {
@@ -194,3 +196,13 @@
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
 </script>
+
+<!-- <script>
+  Swal.fire({
+    title: '<strong>记录</strong>',
+    type: 'info',
+    html: "<div><input></input></div><div><input></input></div>", // HTML
+    focusConfirm: true, //聚焦到确定按钮
+    showCloseButton: true,//右上角关闭
+})
+</script> -->

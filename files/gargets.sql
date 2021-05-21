@@ -3,7 +3,7 @@ INSERT INTO public.canteen(
 	VALUES (1, '窗口1', '赵经理', '15211112222');
 INSERT INTO public.canteen(
 	wno, wname, wadmin, wtel)
-	VALUES (2, '窗口1', '钱经理', '15233334444');
+	VALUES (2, '窗口2', '钱经理', '15233334444');
 INSERT INTO public.canteen(
 	wno, wname, wadmin, wtel)
 	VALUES (3, '窗口3', '孙经理', '15255556666');

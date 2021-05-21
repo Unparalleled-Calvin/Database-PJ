@@ -134,7 +134,7 @@
       url: "canteen",
       dataType: "json",
       data: {
-        wno: wno,
+        wno: canteen[wno]['wno'],
         cuisineid: cuisineid,
         amount: amount,
         csrfmiddlewaretoken: csrfToken,
@@ -176,10 +176,10 @@
 <script>
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
-  var canteen = {{ canteen| safe }};
-  var number = canteen['number'];
+  var canteen = {{ canteen| safe }}['canteen'];
+  var number = canteen.length;
   var cuisineList = [1, 2, 3, 4, 5, 6, 7, 8].sort(() => { return 0.5 - Math.random(); })
-  for (var i = 1; i <= number; i++) {
+  for (var i = 0; i < number; i++) {
     var window_row = document.getElementById("window_row");
 
     var div1 = document.createElement("div");
@@ -187,7 +187,7 @@
 
     var div2 = document.createElement("div");
     div2.classList.add("card");
-    var cuisineid = cuisineList[i-1]
+    var cuisineid = cuisineList[i]
     addClassList(div2, "cuisine_" + cuisineid);
 
 
@@ -196,6 +196,14 @@
     i1.setAttribute('align', 'right');
     i1.style = "cursor:pointer;Margin:7px";
     i1.id = "delete_button" + i.toString();
+
+    var info1 = document.createElement("h6");
+    info1.align = "center";
+    info1.innerText = "窗口号：" + canteen[i]['wno']
+
+    var info2 = document.createElement("h6");
+    info2.align = "center";
+    info2.innerText = "窗口名：" + canteen[i]['wname']
 
     var div3 = document.createElement("div");
     div3.classList.add("buttons");
@@ -221,12 +229,14 @@
     var random_price = String(5 + Math.floor(Math.random() * 5));
     price_div.innerText = random_price + ".00元";
     price_div.align = "center"
-    addClassList(price_div, random_price) 
+    addClassList(price_div, random_price)
 
     div4.appendChild(input1);
     form1.appendChild(div4);
     div3.appendChild(form1);
     div2.appendChild(i1);
+    div2.appendChild(info1);
+    // div2.appendChild(info2);
     div2.appendChild(img);
     div2.appendChild(price_div);
     div2.appendChild(div3);
@@ -262,12 +272,118 @@
 
 
 <script>
+  if (getCookieByString('ID') == 'admin') {
+    Array.from(document.getElementsByClassName('order_button')).forEach(element => {
+      element.value = "编辑";
+    });
+  }
   $(".order_button").on('click', function () {
-    var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
-    var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[2].className;
-    order($(this).attr("id").split('order_button')[1], cuisineid, price);
+    var wno = $(this).attr("id").split('order_button')[1];
+    if (getCookieByString('ID') != 'admin') {
+      var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
+      var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[2].className;
+      order(wno, cuisineid, price);
+    }
+    else {
+      var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+      var html = "<div style='height:60px'><input placeholder='窗口名' value=\'" + canteen[wno]['wname'] + "' id='wname_input'></input></div>\
+               <div style='height:60px'><input placeholder='负责人' value=\'" + canteen[wno]['wadmin'] + "' id='wadmin_input'></input></div>\
+               <div'><input placeholder='联系方式' value=\'" + canteen[wno]['wtel'] + "' id='wtel_input'></input></div>";
+      Swal.fire({
+        title: '修改窗口信息',
+        type: 'info',
+        html: html, // HTML
+        focusConfirm: true, //聚焦到确定按钮
+        showCloseButton: true,//右上角关闭
+      }).then(function (result) {
+        if (result['value']) {
+          var new_wname = $('#wname_input').val();
+          var new_wadmin = $('#wadmin_input').val();
+          var new_wtel = $('#wtel_input').val();
+          $.ajax({
+            type: "POST",
+            url: "canteen",
+            dataType: "json",
+            data: {
+              wno: canteen[wno]['wno'],
+              wname: $('#wname_input').val(),
+              wadmin: $('#wadmin_input').val(),
+              wtel: $('#wtel_input').val(),
+              method: "update",
+              csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+              if (data['ret'] != 0) {
+                swal("修改成功", "", "success");
+                canteen[wno]['wname'] = new_wname;
+                canteen[wno]['wadmin'] = new_wadmin;
+                canteen[wno]['wtel'] = new_wtel;
+              }
+            }
+          });
+        }
+      })
+    }
   });
   $(".delete_button").on('click', function () {
-    ($(this)[0]).parentNode.parentNode.style.display = 'none';
+    var wno = $(this).attr("id").split('delete_button')[1];
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var temp = $(this)[0];
+    $.ajax({
+      type: "POST",
+      url: "canteen",
+      dataType: "json",
+      data: {
+        wno: canteen[wno]['wno'],
+        method: "delete",
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data['ret'] != 0) {
+          swal("删除成功", "", "success");
+          temp.parentNode.parentNode.style.display = 'none';
+        }
+      }
+    });
+  });
+  $(".add_button").on('click', function () {
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+      var html = "<div style='height:60px'><input placeholder='窗口号' id='wno_input'></input></div>\
+               <div style='height:60px'><input placeholder='窗口名' id='wname_input'></input></div>\
+               <div style='height:60px'><input placeholder='负责人' id='wadmin_input'></input></div>\
+               <div'><input placeholder='联系方式' id='wtel_input'></input></div>";
+      Swal.fire({
+        title: '增加窗口',
+        type: 'info',
+        html: html, // HTML
+        focusConfirm: true, //聚焦到确定按钮
+        showCloseButton: true,//右上角关闭
+      }).then(function (result) {
+        if (result['value']) {
+          var new_wno = $('#wno_input').val();
+          var new_wname = $('#wname_input').val();
+          var new_wadmin = $('#wadmin_input').val();
+          var new_wtel = $('#wtel_input').val();
+          $.ajax({
+            type: "POST",
+            url: "canteen",
+            dataType: "json",
+            data: {
+              wno: $('#wno_input').val(),
+              wname: $('#wname_input').val(),
+              wadmin: $('#wadmin_input').val(),
+              wtel: $('#wtel_input').val(),
+              method: "insert",
+              csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+              if (data['ret'] != 0) {
+                swal("修改成功", "", "success");
+                canteen.push({"wno":new_wno, "wname":new_wname, "wadmin":new_wadmin, "wtel":new_wtel})
+              }
+            }
+          });
+        }
+      })
   });
 </script>

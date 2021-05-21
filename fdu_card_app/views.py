@@ -9,9 +9,7 @@ sys.path.append('.\\fdu_card_app')
 from methods import select
 from methods import insert
 from methods import update
-import psycopg2
-conn = psycopg2.connect(database="dbpj", user="postgres", password="admin")
-_cursor = conn.cursor()
+from methods import delete
 cursor = connection.cursor()
 
 # Create your views here.        
@@ -140,12 +138,23 @@ def canteen(request):
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
         ret_dict = {}
-        ret_dict['ret'] = int(insert.insert_consume(conn, _cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount']))
-        ret = JsonResponse(ret_dict)
-        return ret
+        if request.COOKIES['ID'] != 'admin':
+            ret_dict['ret'] = int(insert.insert_consume(cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount']))
+            ret = JsonResponse(ret_dict)
+            return ret
+        else:
+            if request.POST['method'] == 'update':
+                ret_dict['ret'] = int(update.update_canteen(cursor, request.POST['wno'], request.POST['wname'], request.POST['wadmin'], request.POST['wtel']))
+            elif request.POST['method'] == 'delete':
+                ret_dict['ret'] = int(delete.delete_canteen(cursor, request.POST['wno']))
+            elif request.POST['method'] == 'insert':
+                ret_dict['ret'] = int(insert.insert_canteen(cursor, request.POST['wno'], request.POST['wname'], request.POST['wadmin'], request.POST['wtel']))
+            ret = JsonResponse(ret_dict)
+            return ret
+        
     else:
         return render(request, "canteen.html",  {
-            'canteen': json.dumps({'number':len(select.select_canteen(cursor)[2][0])}),
+            'canteen': json.dumps({'canteen':select.select_canteen(cursor)[2][0]}),
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })
 
@@ -154,7 +163,7 @@ def access(request):
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
         ret_dict = {}
-        ret_dict['ret'] = int(insert.insert_access(conn, _cursor, request.COOKIES['ID'], request.POST['dno']))
+        ret_dict['ret'] = int(insert.insert_access(cursor, request.COOKIES['ID'], request.POST['dno']))
         ret = JsonResponse(ret_dict)
         return ret
     else:
