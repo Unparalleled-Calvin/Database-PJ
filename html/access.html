@@ -149,10 +149,10 @@
 <script>
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
-  var dormitory = {{ dormitory| safe }};
-  var number = dormitory['number'];
-  var dnoList = dormitory['dnoList']
-  for (var i = 1; i <= number; i++) {
+  var dormitory = {{ dormitory| safe }}['dList'];
+  var number = dormitory.length;
+  var dnoList = {{ dormitory| safe }}['dnoList']
+  for (var i = 0; i < number; i++) {
     var window_row = document.getElementById("window_row");
 
     var div1 = document.createElement("div");
@@ -165,7 +165,7 @@
     addClassList(i1, "delete_button fa fa-window-close fa-lg");
     i1.setAttribute('align', 'right');
     i1.style = "cursor:pointer;Margin:7px";
-    i1.id = "delete_button" + dnoList[i-1]
+    i1.id = "delete_button" + i
 
     var div3 = document.createElement("div");
     div3.classList.add("buttons");
@@ -179,12 +179,12 @@
 
     var input1 = document.createElement("input");
     input1.type = "submit";
-    input1.id = "valid_button" + dnoList[i-1]
+    input1.id = "valid_button" + i
     input1.value = "验证";
     addClassList(input1, "valid_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
 
     var dno_div = document.createElement("h3");
-    dno_div.innerText = String(dnoList[i-1]) + "号楼";
+    dno_div.innerText = String(dnoList[i]) + "号楼";
     dno_div.align = "center"
 
     div4.appendChild(input1);
@@ -247,11 +247,127 @@
 </script>
 
 <script>
+  if (getCookieByString('ID') == 'admin') {
+    Array.from(document.getElementsByClassName('valid_button')).forEach(element => {
+      element.value = "编辑";
+    });
+  }
   $(".valid_button").on('click', function () {
     var dno = $(this).attr("id").split('valid_button')[1];
-    validate(dno);
+    if (getCookieByString('ID') != 'admin') {
+      validate(dormitory[dno]['dno']);
+    }
+    else {
+      var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+      var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' value=\'" + dormitory[dno]['dadmin'] + "' id='dadmin_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' value=\'" + dormitory[dno]['dtel'] + "' id='dtel_input'></input></div>\
+               <div><p style='display:inline-block;width:100px;text-align:justify;'>层数：</p><input placeholder='层数' value=\'" + dormitory[dno]['dfloor'] + "' id='dfloor_input'></input></div>";
+      Swal.fire({
+        title: '修改楼寝信息',
+        type: 'info',
+        html: html, // HTML
+        focusConfirm: true, //聚焦到确定按钮
+        showCloseButton: true,//右上角关闭
+      }).then(function (result) {
+        if (result['value']) {
+          var new_dadmin = $('#dadmin_input').val();
+          var new_dtel = $('#dtel_input').val();
+          var new_dfloor = $('#dfloor_input').val();
+          $.ajax({
+            type: "POST",
+            url: "access",
+            dataType: "json",
+            data: {
+              dno: dormitory[dno]['dno'],
+              dadmin: $('#dadmin_input').val(),
+              dtel: $('#dtel_input').val(),
+              dfloor: $('#dfloor_input').val(),
+              method: "update",
+              csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+              if (data['ret'] != 0) {
+                swal("修改成功", "", "success");
+                dormitory[dno]['dadmin'] = new_dadmin;
+                dormitory[dno]['dtel'] = new_dtel;
+                dormitory[dno]['dfloor'] = new_dfloor;
+              }
+            }
+          });
+        }
+      })
+    }
   });
   $(".delete_button").on('click', function () {
-    ($(this)[0]).parentNode.parentNode.style.display = 'none';
+    var dno = $(this).attr("id").split('delete_button')[1];
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var temp = $(this)[0];
+    Swal.fire({
+      title: '确定要删除吗',
+      type: 'info',
+      confirmButtonText: "确定",
+      focusConfirm: true, //聚焦到确定按钮
+      showCloseButton: true,//右上角关闭
+    }).then(function (result) {
+      if (result['value'])
+        $.ajax({
+          type: "POST",
+          url: "access",
+          dataType: "json",
+          data: {
+            dno: dormitory[dno]['dno'],
+            method: "delete",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data['ret'] != 0) {
+              swal("删除成功", "", "success");
+              temp.parentNode.parentNode.style.display = 'none';
+            }
+          }
+        });
+    });
+  });
+  $(".add_button").on('click', function () {
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>楼寝号：</p><input placeholder='楼寝号' id='dno_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' id='dadmin_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' id='dtel_input'></input></div>\
+               <div'><p style='display:inline-block;width:100px;text-align:justify;'>层数：</p><input placeholder='层数' id='dfloor_input'></input></div>";
+    Swal.fire({
+      title: '增加楼寝',
+      type: 'info',
+      html: html, // HTML
+      focusConfirm: true, //聚焦到确定按钮
+      showCloseButton: true,//右上角关闭
+    }).then(function (result) {
+      if (result['value']) {
+        var new_dno = $('#dno_input').val();
+        var new_dadmin = $('#dadmin_input').val();
+        var new_dtel = $('#dtel_input').val();
+        var new_dfloor = $('#dfloor_input').val();
+        $.ajax({
+          type: "POST",
+          url: "access",
+          dataType: "json",
+          data: {
+            dno: $('#dno_input').val(),
+            dadmin: $('#dadmin_input').val(),
+            dtel: $('#dtel_input').val(),
+            dfloor: $('#dfloor_input').val(),
+            method: "insert",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data['ret'] != 0) {
+              swal("修改成功", "请刷新页面", "success");
+            }
+            else {
+              swal("修改失败", "楼寝号不能重复", "error");
+            }
+          }
+        });
+      }
+    })
   });
 </script>

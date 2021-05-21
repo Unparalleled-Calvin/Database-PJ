@@ -140,17 +140,18 @@ def canteen(request):
         ret_dict = {}
         if request.COOKIES['ID'] != 'admin':
             ret_dict['ret'] = int(insert.insert_consume(cursor, request.POST['wno'], request.COOKIES['ID'], request.POST['cuisineid'], request.POST['amount']))
-            ret = JsonResponse(ret_dict)
-            return ret
         else:
-            if request.POST['method'] == 'update':
-                ret_dict['ret'] = int(update.update_canteen(cursor, request.POST['wno'], request.POST['wname'], request.POST['wadmin'], request.POST['wtel']))
-            elif request.POST['method'] == 'delete':
-                ret_dict['ret'] = int(delete.delete_canteen(cursor, request.POST['wno']))
-            elif request.POST['method'] == 'insert':
-                ret_dict['ret'] = int(insert.insert_canteen(cursor, request.POST['wno'], request.POST['wname'], request.POST['wadmin'], request.POST['wtel']))
-            ret = JsonResponse(ret_dict)
-            return ret
+            try:
+                if request.POST['method'] == 'update':
+                    ret_dict['ret'] = int(update.update_canteen(cursor, request.POST['wno'], request.POST['wname'], request.POST['wadmin'], request.POST['wtel']))
+                elif request.POST['method'] == 'delete':
+                    ret_dict['ret'] = int(delete.delete_canteen(cursor, request.POST['wno']))
+                elif request.POST['method'] == 'insert':
+                    ret_dict['ret'] = int(insert.insert_canteen(cursor, request.POST['wno'], request.POST['wname'], request.POST['wadmin'], request.POST['wtel']))
+            except Exception:
+                ret_dict['ret'] = 0
+        ret = JsonResponse(ret_dict)
+        return ret
         
     else:
         return render(request, "canteen.html",  {
@@ -163,7 +164,18 @@ def access(request):
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
         ret_dict = {}
-        ret_dict['ret'] = int(insert.insert_access(cursor, request.COOKIES['ID'], request.POST['dno']))
+        if request.COOKIES['ID'] != 'admin':
+            ret_dict['ret'] = int(insert.insert_access(cursor, request.COOKIES['ID'], request.POST['dno']))
+        else:
+            try:
+                if request.POST['method'] == 'update':
+                    ret_dict['ret'] = int(update.update_dormitory(cursor, request.POST['dno'], request.POST['dadmin'], request.POST['dtel'], request.POST['dfloor']))
+                elif request.POST['method'] == 'delete':
+                    ret_dict['ret'] = int(delete.delete_dormitory(cursor, request.POST['dno']))
+                elif request.POST['method'] == 'insert':
+                    ret_dict['ret'] = int(insert.insert_dormitory(cursor, request.POST['dno'], request.POST['dadmin'], request.POST['dtel'], request.POST['dfloor']))
+            except Exception:
+                ret_dict['ret'] = 0
         ret = JsonResponse(ret_dict)
         return ret
     else:
@@ -173,6 +185,6 @@ def access(request):
             dnoList.append(each['dno'])
         dnoList.sort()
         return render(request, "access.html",  {
-            'dormitory': json.dumps({'number':len(dList), "dnoList":dnoList}),
+            'dormitory': json.dumps({'dList':dList, "dnoList":dnoList}),
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })

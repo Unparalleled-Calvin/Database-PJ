@@ -86,7 +86,7 @@ def update_work(cursor, id, newwork):
 
 # 更新宿舍信息
 def update_dormitory(cursor, dno, dadmin, dtel, dfloor):
-    sql = "update dormitory set (dadmin, dtel, dfloor) = ('{}', '{}', '{}') where dno = '{}'".format(
+    sql = "update domitory set (dadmin, dtel, dfloor) = ('{}', '{}', '{}') where dno = '{}'".format(
         dadmin, dtel, dfloor, dno)
     cursor.execute(sql)
     return cursor.rowcount

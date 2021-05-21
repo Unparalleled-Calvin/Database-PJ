@@ -281,14 +281,14 @@
     var wno = $(this).attr("id").split('order_button')[1];
     if (getCookieByString('ID') != 'admin') {
       var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
-      var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[2].className;
+      var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[3].className;
       order(wno, cuisineid, price);
     }
     else {
       var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-      var html = "<div style='height:60px'><input placeholder='窗口名' value=\'" + canteen[wno]['wname'] + "' id='wname_input'></input></div>\
-               <div style='height:60px'><input placeholder='负责人' value=\'" + canteen[wno]['wadmin'] + "' id='wadmin_input'></input></div>\
-               <div'><input placeholder='联系方式' value=\'" + canteen[wno]['wtel'] + "' id='wtel_input'></input></div>";
+      var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>窗口名：</p><input placeholder='窗口名' value=\'" + canteen[wno]['wname'] + "' id='wname_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' value=\'" + canteen[wno]['wadmin'] + "' id='wadmin_input'></input></div>\
+               <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' value=\'" + canteen[wno]['wtel'] + "' id='wtel_input'></input></div>";
       Swal.fire({
         title: '修改窗口信息',
         type: 'info',
@@ -329,61 +329,72 @@
     var wno = $(this).attr("id").split('delete_button')[1];
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
     var temp = $(this)[0];
-    $.ajax({
-      type: "POST",
-      url: "canteen",
-      dataType: "json",
-      data: {
-        wno: canteen[wno]['wno'],
-        method: "delete",
-        csrfmiddlewaretoken: csrfToken,
-      },
-      success: function (data) {
-        if (data['ret'] != 0) {
-          swal("删除成功", "", "success");
-          temp.parentNode.parentNode.style.display = 'none';
-        }
-      }
+    Swal.fire({
+      title: '确定要删除吗',
+      type: 'info',
+      confirmButtonText: "确定",
+      focusConfirm: true, //聚焦到确定按钮
+      showCloseButton: true,//右上角关闭
+    }).then(function (result) {
+      if (result['value'])
+        $.ajax({
+          type: "POST",
+          url: "canteen",
+          dataType: "json",
+          data: {
+            wno: canteen[wno]['wno'],
+            method: "delete",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data['ret'] != 0) {
+              swal("删除成功", "", "success");
+              temp.parentNode.parentNode.style.display = 'none';
+            }
+          }
+        });
     });
   });
   $(".add_button").on('click', function () {
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-      var html = "<div style='height:60px'><input placeholder='窗口号' id='wno_input'></input></div>\
-               <div style='height:60px'><input placeholder='窗口名' id='wname_input'></input></div>\
-               <div style='height:60px'><input placeholder='负责人' id='wadmin_input'></input></div>\
-               <div'><input placeholder='联系方式' id='wtel_input'></input></div>";
-      Swal.fire({
-        title: '增加窗口',
-        type: 'info',
-        html: html, // HTML
-        focusConfirm: true, //聚焦到确定按钮
-        showCloseButton: true,//右上角关闭
-      }).then(function (result) {
-        if (result['value']) {
-          var new_wno = $('#wno_input').val();
-          var new_wname = $('#wname_input').val();
-          var new_wadmin = $('#wadmin_input').val();
-          var new_wtel = $('#wtel_input').val();
-          $.ajax({
-            type: "POST",
-            url: "canteen",
-            dataType: "json",
-            data: {
-              wno: $('#wno_input').val(),
-              wname: $('#wname_input').val(),
-              wadmin: $('#wadmin_input').val(),
-              wtel: $('#wtel_input').val(),
-              method: "insert",
-              csrfmiddlewaretoken: csrfToken,
-            },
-            success: function (data) {
-              if (data['ret'] != 0) {
-                swal("修改成功", "", "success");
-                canteen.push({"wno":new_wno, "wname":new_wname, "wadmin":new_wadmin, "wtel":new_wtel})
-              }
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>窗口号：</p><input placeholder='窗口号' id='wno_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>窗口名：</p><input placeholder='窗口名' id='wname_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' id='wadmin_input'></input></div>\
+               <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' id='wtel_input'></input></div>";
+    Swal.fire({
+      title: '增加窗口',
+      type: 'info',
+      html: html, // HTML
+      focusConfirm: true, //聚焦到确定按钮
+      showCloseButton: true,//右上角关闭
+    }).then(function (result) {
+      if (result['value']) {
+        var new_wno = $('#wno_input').val();
+        var new_wname = $('#wname_input').val();
+        var new_wadmin = $('#wadmin_input').val();
+        var new_wtel = $('#wtel_input').val();
+        $.ajax({
+          type: "POST",
+          url: "canteen",
+          dataType: "json",
+          data: {
+            wno: $('#wno_input').val(),
+            wname: $('#wname_input').val(),
+            wadmin: $('#wadmin_input').val(),
+            wtel: $('#wtel_input').val(),
+            method: "insert",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data['ret'] != 0) {
+              swal("修改成功", "请刷新页面", "success");
             }
-          });
-        }
-      })
+            else {
+              swal("修改失败", "窗口号不能重复", "error");
+            }
+          }
+        });
+      }
+    })
   });
 </script>

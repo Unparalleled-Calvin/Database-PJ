@@ -6,7 +6,7 @@ def delete_person(cursor, id):
 
 
 # 删除宿舍
-def delete_domitory(cursor, dno):
+def delete_dormitory(cursor, dno):
     sql = "delete from domitory where dno = '{}'".format(dno)
     cursor.execute(sql)
     return cursor.rowcount

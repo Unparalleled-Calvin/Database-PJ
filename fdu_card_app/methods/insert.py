@@ -33,7 +33,7 @@ def insert_others(cursor, id, work):
     return cursor.rowcount
 
 
-def insert_domitory(cursor, dno, dadmin, dtel, dfloor):
+def insert_dormitory(cursor, dno, dadmin, dtel, dfloor):
     sql = "insert into domitory values('{}', '{}', '{}', '{}')".format(
         dno, dadmin, dtel, dfloor)
     cursor.execute(sql)
