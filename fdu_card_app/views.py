@@ -159,6 +159,32 @@ def canteen(request):
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })
 
+def leave(request):
+    if 'ID' not in request.COOKIES:
+        return HttpResponseRedirect('/login')
+    elif request.method == 'POST':
+        ret_dict = {}
+        if request.COOKIES['ID'] != 'admin':
+            ret_dict['ret'] = int(insert.insert_record(cursor, request.COOKIES['ID'], request.POST['gno'], request.POST['inout']))
+        else:
+            try:
+                if request.POST['method'] == 'update':
+                    ret_dict['ret'] = int(update.update_gate(cursor, request.POST['gno'], request.POST['gname'], request.POST['gadmin'], request.POST['gtel']))
+                elif request.POST['method'] == 'delete':
+                    ret_dict['ret'] = int(delete.delete_gate(cursor, request.POST['gno']))
+                elif request.POST['method'] == 'insert':
+                    ret_dict['ret'] = int(insert.insert_gate(cursor, request.POST['gno'], request.POST['gname'], request.POST['gadmin'], request.POST['gtel']))
+            except Exception:
+                ret_dict['ret'] = 0
+        ret = JsonResponse(ret_dict)
+        return ret
+    else:
+        gList = select.select_gate(cursor)[2][0]
+        return render(request, "leave.html",  {
+            'gate': json.dumps({'gList':gList}),
+            'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
+        })
+
 def access(request):
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')

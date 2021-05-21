@@ -90,9 +90,9 @@
           <ul class="sidebar-menu">
             <li><a class="nav-link" href="/user"><i class="fas fa-school"></i>
                 <span>首页</span></a></li>
-            <li class="active"><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
+            <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                 <span>用餐</span></a></li>
-            <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
+            <li class="active"><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
                 <span>离校</span></a></li>
             <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
                 <span>回寝</span></a></li>
@@ -102,7 +102,7 @@
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>餐厅</h1>
+            <h1>校门</h1>
           </div>
           <div class="row" id="window_row">
             <!-- <div class="col-12 col-md-4 col-lg-4">
@@ -127,33 +127,6 @@
 </head>
 
 <script>
-  function order(wno, cuisineid, amount) {
-    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-    $.ajax({
-      type: "POST",
-      url: "canteen",
-      dataType: "json",
-      data: {
-        wno: canteen[wno]['wno'],
-        cuisineid: cuisineid,
-        amount: amount,
-        csrfmiddlewaretoken: csrfToken,
-      },
-      success: function (data) {
-        if (data.ret != 0) {
-          var Msg = '节约光荣，浪费可耻';
-          swal('点餐成功', Msg, 'success');
-        }
-        else {
-          var Msg = '余额不足，请尝试充值后重新点餐';
-          swal('错误', Msg, 'error');
-        }
-      }
-    });
-  }
-</script>
-
-<script>
   $('#sidebar-button').click(function () {
     var body = $('body')
     if (body.hasClass('sidebar-mini')) {
@@ -176,9 +149,8 @@
 <script>
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
-  var canteen = {{ canteen| safe }}['canteen'];
-  var number = canteen.length;
-  var cuisineList = [1, 2, 3, 4, 5, 6, 7, 8].sort(() => { return 0.5 - Math.random(); })
+  var gate = {{ gate| safe }}['gList'];
+  var number = gate.length;
   for (var i = 0; i < number; i++) {
     var window_row = document.getElementById("window_row");
 
@@ -187,23 +159,12 @@
 
     var div2 = document.createElement("div");
     div2.classList.add("card");
-    var cuisineid = cuisineList[i]
-    addClassList(div2, "cuisine_" + cuisineid);
-
 
     var i1 = document.createElement("i");
     addClassList(i1, "delete_button fa fa-window-close fa-lg");
     i1.setAttribute('align', 'right');
     i1.style = "cursor:pointer;Margin:7px";
-    i1.id = "delete_button" + i.toString();
-
-    var info1 = document.createElement("h6");
-    info1.align = "center";
-    info1.innerText = "窗口号：" + canteen[i]['wno']
-
-    var info2 = document.createElement("h6");
-    info2.align = "center";
-    info2.innerText = "窗口名：" + canteen[i]['wname']
+    i1.id = "delete_button" + i
 
     var div3 = document.createElement("div");
     div3.classList.add("buttons");
@@ -215,30 +176,35 @@
     var div4 = document.createElement("div");
     div4.classList.add("center");
 
-    var img = document.createElement("img");
-    var filePath = '/images/cuisine/' + cuisineid + '.jpg';
-    img.src = "/static" + filePath
-
     var input1 = document.createElement("input");
     input1.type = "submit";
-    input1.id = "order_button" + i.toString();
-    input1.value = "点餐";
-    addClassList(input1, "order_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
+    input1.id = "in_button" + i
+    input1.value = "入校";
+    addClassList(input1, "in_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
 
-    var price_div = document.createElement("h3");
-    var random_price = String(5 + Math.floor(Math.random() * 5));
-    price_div.innerText = random_price + ".00元";
-    price_div.align = "center"
-    addClassList(price_div, "price " + random_price)
+    var input2 = document.createElement("input");
+    input2.type = "submit";
+    input2.id = "out_button" + i
+    input2.value = "出校";
+    addClassList(input2, "out_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
+
+    var input3 = document.createElement("input");
+    input3.type = "submit";
+    input3.id = "edit_button" + i
+    input3.value = "编辑";
+    addClassList(input3, "edit_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
+
+    var gname_div = document.createElement("h3");
+    gname_div.innerText = gate[i]["gname"];
+    gname_div.align = "center"
 
     div4.appendChild(input1);
+    div4.appendChild(input2);
+    div4.appendChild(input3);
     form1.appendChild(div4);
     div3.appendChild(form1);
     div2.appendChild(i1);
-    div2.appendChild(info1);
-    // div2.appendChild(info2);
-    div2.appendChild(img);
-    div2.appendChild(price_div);
+    div2.appendChild(gname_div);
     div2.appendChild(div3);
     div1.appendChild(div2);
     window_row.appendChild(div1);
@@ -261,6 +227,9 @@
   window_row.appendChild(div1);
 
   if (getCookieByString('ID') != 'admin') {
+    Array.from(document.getElementsByClassName('edit_button')).forEach(element => {
+      element.style.display = 'none';
+    });
     Array.from(document.getElementsByClassName('delete_button')).forEach(element => {
       element.style.display = 'none';
     });
@@ -268,68 +237,105 @@
       element.style.display = 'none';
     });
   }
+  else {
+    Array.from(document.getElementsByClassName('in_button')).forEach(element => {
+      element.style.display = 'none';
+    });
+    Array.from(document.getElementsByClassName('out_button')).forEach(element => {
+      element.style.display = 'none';
+    });
+  }
 </script>
 
 
 <script>
-  if (getCookieByString('ID') == 'admin') {
-    Array.from(document.getElementsByClassName('order_button')).forEach(element => {
-      element.value = "编辑";
-    });
-    Array.from(document.getElementsByClassName('price')).forEach(element => {
-      element.style.display = 'none';
-    });
-  }
-  $(".order_button").on('click', function () {
-    var wno = $(this).attr("id").split('order_button')[1];
-    if (getCookieByString('ID') != 'admin') {
-      var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
-      var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[3].className.split(' ')[1];
-      order(wno, cuisineid, price);
-    }
-    else {
-      var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-      var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>窗口名：</p><input placeholder='窗口名' value=\'" + canteen[wno]['wname'] + "' id='wname_input'></input></div>\
-               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' value=\'" + canteen[wno]['wadmin'] + "' id='wadmin_input'></input></div>\
-               <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' value=\'" + canteen[wno]['wtel'] + "' id='wtel_input'></input></div>";
-      Swal.fire({
-        title: '修改窗口信息',
-        type: 'info',
-        html: html, // HTML
-        focusConfirm: true, //聚焦到确定按钮
-        showCloseButton: true,//右上角关闭
-      }).then(function (result) {
-        if (result['value']) {
-          var new_wname = $('#wname_input').val();
-          var new_wadmin = $('#wadmin_input').val();
-          var new_wtel = $('#wtel_input').val();
-          $.ajax({
-            type: "POST",
-            url: "canteen",
-            dataType: "json",
-            data: {
-              wno: canteen[wno]['wno'],
-              wname: $('#wname_input').val(),
-              wadmin: $('#wadmin_input').val(),
-              wtel: $('#wtel_input').val(),
-              method: "update",
-              csrfmiddlewaretoken: csrfToken,
-            },
-            success: function (data) {
-              if (data['ret'] != 0) {
-                swal("修改成功", "", "success");
-                canteen[wno]['wname'] = new_wname;
-                canteen[wno]['wadmin'] = new_wadmin;
-                canteen[wno]['wtel'] = new_wtel;
-              }
-            }
-          });
+  $(".in_button").on('click', function () {
+    var gno = $(this).attr("id").split('in_button')[1];
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    $.ajax({
+      type: "POST",
+      url: "leave",
+      dataType: "json",
+      data: {
+        gno: gate[gno]['gno'],
+        inout: "in",
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data.ret != 0) {
+          swal('认证成功', '欢迎进入复旦大学', 'success');
         }
-      })
-    }
+        else {
+          swal('认证失败', '您未获得相关权限', 'error');
+        }
+      }
+    });
+  });
+  $(".out_button").on('click', function () {
+    var gno = $(this).attr("id").split('out_button')[1];
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    $.ajax({
+      type: "POST",
+      url: "leave",
+      dataType: "json",
+      data: {
+        gno: gate[gno]['gno'],
+        inout: "out",
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data.ret != 0) {
+          swal('认证成功', '出校请注意安全', 'success');
+        }
+        else {
+          swal('认证失败', '您未获得相关权限', 'error');
+        }
+      }
+    });
+  });
+  $(".edit_button").on('click', function () {
+    var gno = $(this).attr("id").split('edit_button')[1];
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>校门名：</p><input placeholder='窗口名' value=\'" + gate[gno]['gname'] + "' id='gname_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' value=\'" + gate[gno]['gadmin'] + "' id='gadmin_input'></input></div>\
+               <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' value=\'" + gate[gno]['gtel'] + "' id='gtel_input'></input></div>";
+    Swal.fire({
+      title: '修改窗口信息',
+      type: 'info',
+      html: html, // HTML
+      focusConfirm: true, //聚焦到确定按钮
+      showCloseButton: true,//右上角关闭
+    }).then(function (result) {
+      if (result['value']) {
+        var new_gname = $('#gname_input').val();
+        var new_gadmin = $('#gadmin_input').val();
+        var new_gtel = $('#gtel_input').val();
+        $.ajax({
+          type: "POST",
+          url: "leave",
+          dataType: "json",
+          data: {
+            gno: gate[gno]['gno'],
+            gname: $('#gname_input').val(),
+            gadmin: $('#gadmin_input').val(),
+            gtel: $('#gtel_input').val(),
+            method: "update",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data['ret'] != 0) {
+              swal("修改成功", "", "success");
+              gate[gno]['gname'] = new_gname;
+              gate[gno]['gadmin'] = new_gadmin;
+              gate[gno]['gtel'] = new_gtel;
+            }
+          }
+        });
+      }
+    })
   });
   $(".delete_button").on('click', function () {
-    var wno = $(this).attr("id").split('delete_button')[1];
+    var gno = $(this).attr("id").split('delete_button')[1];
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
     var temp = $(this)[0];
     Swal.fire({
@@ -342,10 +348,10 @@
       if (result['value'])
         $.ajax({
           type: "POST",
-          url: "canteen",
+          url: "leave",
           dataType: "json",
           data: {
-            wno: canteen[wno]['wno'],
+            gno: gate[gno]['gno'],
             method: "delete",
             csrfmiddlewaretoken: csrfToken,
           },
@@ -360,10 +366,10 @@
   });
   $(".add_button").on('click', function () {
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>窗口号：</p><input placeholder='窗口号' id='wno_input'></input></div>\
-               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>窗口名：</p><input placeholder='窗口名' id='wname_input'></input></div>\
-               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' id='wadmin_input'></input></div>\
-               <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' id='wtel_input'></input></div>";
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>校门号：</p><input placeholder='校门号' id='gno_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>校门名：</p><input placeholder='校门名' id='gname_input'></input></div>\
+               <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' id='gadmin_input'></input></div>\
+               <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' id='gtel_input'></input></div>";
     Swal.fire({
       title: '增加窗口',
       type: 'info',
@@ -372,19 +378,19 @@
       showCloseButton: true,//右上角关闭
     }).then(function (result) {
       if (result['value']) {
-        var new_wno = $('#wno_input').val();
-        var new_wname = $('#wname_input').val();
-        var new_wadmin = $('#wadmin_input').val();
-        var new_wtel = $('#wtel_input').val();
+        var new_gno = $('#gno_input').val();
+        var new_gname = $('#gname_input').val();
+        var new_gadmin = $('#gadmin_input').val();
+        var new_gtel = $('#gtel_input').val();
         $.ajax({
           type: "POST",
-          url: "canteen",
+          url: "leave",
           dataType: "json",
           data: {
-            wno: $('#wno_input').val(),
-            wname: $('#wname_input').val(),
-            wadmin: $('#wadmin_input').val(),
-            wtel: $('#wtel_input').val(),
+            gno: $('#gno_input').val(),
+            gname: $('#gname_input').val(),
+            gadmin: $('#gadmin_input').val(),
+            gtel: $('#gtel_input').val(),
             method: "insert",
             csrfmiddlewaretoken: csrfToken,
           },
@@ -393,7 +399,7 @@
               swal("修改成功", "请刷新页面", "success");
             }
             else {
-              swal("修改失败", "窗口号不能重复", "error");
+              swal("修改失败", "校门号不能重复", "error");
             }
           }
         });

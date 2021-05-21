@@ -23,6 +23,7 @@ urlpatterns = [
     path('', views.login),
     path('user', views.user),
     path('canteen', views.canteen),
+    path('leave', views.leave),
     path('access', views.access),
     path('register', views.register),
     path('reset', views.reset),

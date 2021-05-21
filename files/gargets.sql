@@ -33,3 +33,16 @@ INSERT INTO public.domitory(
 INSERT INTO public.domitory(
 	dno, dadmin, dtel, dfloor)
 	VALUES ('8', '吴阿姨', '18944442222', 3);
+
+INSERT INTO public.gate(
+	gno, gname, gadmin, gtel)
+	VALUES (2, '北大门', '冯队长', '1234567');
+INSERT INTO public.gate(
+	gno, gname, gadmin, gtel)
+	VALUES (4, '南大门', '陈队长', '7654321');
+INSERT INTO public.gate(
+	gno, gname, gadmin, gtel)
+	VALUES (5, '西大门', '诸队长', '1234765');
+INSERT INTO public.gate(
+	gno, gname, gadmin, gtel)
+	VALUES (7, '东大门', '卫队长', '3214765');
