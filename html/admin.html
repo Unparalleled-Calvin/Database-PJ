@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+
+  <link rel="icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+  <link rel="shortcut icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static '/css/all.css' %}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{% static '/css/style-purple.css' %}">
+  <link rel="stylesheet" href="{% static '/css/components.css' %}">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static '/css/malio.css' %}">
+
+  <title>复旦一卡通</title>
+
+  <!-- C3 chart css -->
+  <link rel="stylesheet" href="{% static '/css/c3.min.css' %}">
+
+  <!-- General JS Scripts -->
+  <script src="{% static '/js/jquery.min.js' %}"></script>
+  <script src="{% static '/js/bootstrap.min.js' %}"></script>
+  <!-- Counter Up  -->
+
+  <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
+  <script src="{% static '/js/jquery.js' %}"></script>
+  <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
+  <script src="{% static '/js/gargets.js' %}"></script>
+  <script>
+    $('.counter').counterUp({
+      delay: 10,
+      time: 1000
+    });
+
+
+    setTimeout(loadTrafficChart(), 3000);
+  </script>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" id="sidebar-button" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+            </li>
+          </ul>
+        </form>
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown dropdown-list-toggle"></li>
+          <li class="dropdown"><a href="#" data-toggle="dropdown"
+              class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+              <img alt="image" src="{% static '/images/g' %}" class="rounded-circle mr-1">
+              <div class="d-sm-none d-lg-inline-block" id="name">Hi, Calvin</div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-divider"></div>
+              <a href="logout" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> 退出登录
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="main-sidebar sidebar-style-2" tabindex="1" style="overflow: hidden; outline: none;">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href=""> </a>
+          </div>
+          <div class="sidebar-brand sidebar-brand-sm">
+            <a href="">菜单</a>
+          </div>
+          <ul class="sidebar-menu">
+            <li class="active"><a class="nav-link" href="/user"><i class="fas fa-school"></i>
+                <span>管理</span></a></li>
+            <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
+                <span>用餐</span></a></li>
+            <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
+                <span>离校</span></a></li>
+            <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
+                <span>回寝</span></a></li>
+          </ul>
+        </aside>
+      </div>
+      <div class="main-content">
+        <section class="section">
+          <div class="section-header">
+            <h1>管理</h1>
+          </div>
+        </section>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="card" align="center">
+            <div>&nbsp;</div>
+            <h3>信息查询</h3>
+            <div class="card-wrap">
+              <div id="table-div"></div>
+              <div>&nbsp;</div>
+              <div class="buttons">
+                <form action="javascript:void(0);" method="POST">
+                  <div>
+                    <select class="custom-select input-group-append col-5" name="rank" id="role" required="" style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;" onchange="javascript:show();">
+                      <option value="student" selected="">所有学生</option>
+                      <option value="teacher">所有教授</option>
+                      <option value="others">所有外来人员</option>
+                      <option value="profit">各餐厅营业额</option>
+                    </select>
+                    <div id="start-end" style="display: none;">
+                      <div>
+                        <label for="start">起始时间</label>
+                        <input id="start" type="date" class="custom-select input-group-append col-6" />
+                      </div>
+                      <div>
+                        <label for="end">终止时间</label>
+                        <input id="end" type="date" class="custom-select input-group-append col-6" />
+                      </div>
+                    </div>
+                  </div>
+                  <div>&nbsp;<div>
+                      <div align="center">
+                        <input type="submit" id="select_button" class="btn btn-icon icon-left btn-primary" value="查询" />
+                      </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</head>
+
+<script>
+  $('#sidebar-button').click(function () {
+    var body = $('body')
+    if (body.hasClass('sidebar-mini')) {
+      body.removeClass('sidebar-mini');
+      body.addClass('sidebar-show');
+    } else {
+      body.addClass('sidebar-mini');
+      body.removeClass('sidebar-show');
+    }
+    return false;
+  });
+
+  if (window.screen.width < 600) {
+    var target = document.getElementById("sidebar-button");
+    $('body').addClass('sidebar-mini');
+    target.style.display = "none";
+  }
+</script>
+
+<script>
+  var name = {{ name | safe }};
+  var data = {{ data | safe }};
+  document.getElementById('name').innerHTML = ("Hi, " + name);
+  showTable("table-div", data);
+  $("#select_button").on('click', function () {
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var role = $('#role').val();
+    $('#table-div').empty()
+    $.ajax({
+      type: "POST",
+      url: "user",
+      dataType: "json",
+      data: {
+        method: "select",
+        role: role,
+        start: $("#start").val(),
+        end: $("#end").val(),
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data['ret'] != 0) {
+          swal("查询成功", "", "success");
+          showTable("table-div", data['data'])
+        }
+        else {
+          swal("查询失败", "请联系网站管理员汇报错误", "error");
+        }
+      }
+    });
+  });
+</script>
+
+<script>
+  function show(){
+    if($("#role").val() == "profit") {
+      $("#start-end")[0].style.display = "block";
+    }
+    else{
+      $("#start-end")[0].style.display = "none";
+    }
+  }
+</script>

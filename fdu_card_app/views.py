@@ -116,22 +116,49 @@ def reset(request):
         return render(request, "reset.html")
 
 def user(request):
+
+    def toDataDict(dataTuple, forChange = None): #将元组数据转成字典数据，并将其中的时间类转成字符串
+        data_dict = {}
+        data_dict["heads"] = dataTuple[0]
+        data_dict["dataKeys"] = dataTuple[1]
+        data_dict["data"] = dataTuple[2]
+        if forChange != None:
+            for i in data_dict["data"][0]:
+                i[forChange] = str(i[forChange])
+        return data_dict
+
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     else:
         if request.method == 'POST':
             ret_dict = {}
-            try:
-                remainingsum = update.update_remainingsum(cursor, request.COOKIES['ID'], request.POST['amount'])
-                ret_dict["remainingsum"] = str(remainingsum)
-                ret_dict['ret'] = 1
-            except Exception:
-                ret_dict['ret'] = 0
+            if request.COOKIES['ID'] != 'admin':
+                try:
+                    remainingsum = update.update_remainingsum(cursor, request.COOKIES['ID'], request.POST['amount'])
+                    ret_dict["remainingsum"] = str(remainingsum)
+                    ret_dict['ret'] = 1
+                except Exception:
+                    ret_dict['ret'] = 0
+            else:
+                try:
+                    if request.POST['method'] == 'select':
+                        if request.POST['role'] == 'student':
+                            ret_dict['data'] = toDataDict(select.select_student(cursor), "enrolmentdt")
+                        elif request.POST['role'] == 'teacher':
+                            ret_dict['data'] = toDataDict(select.select_teacher(cursor), "birthday")
+                        elif request.POST['role'] == 'others':
+                            ret_dict['data'] = toDataDict(select.select_others(cursor))
+                        elif request.POST['role'] == 'profit':
+                            ret_dict['data'] = toDataDict(select.select_profit(cursor, request.POST['start'], request.POST['end']))
+                    ret_dict['ret'] = 1
+                except Exception:
+                    ret_dict['ret'] = 0
             return JsonResponse(ret_dict)
         else:
             data = select.select_information(cursor, request.COOKIES['ID'])[2][0][0]
             data['name'] = "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
-            return render(request, "user.html", data)
+            data['data'] = toDataDict(select.select_student(cursor), "enrolmentdt")
+            return render(request, "user.html" if request.COOKIES['ID'] != 'admin' else 'admin.html', data)
     
 def canteen(request):
     if 'ID' not in request.COOKIES:
