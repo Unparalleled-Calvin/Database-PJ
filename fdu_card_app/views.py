@@ -134,8 +134,19 @@ def user(request):
             ret_dict = {}
             if request.COOKIES['ID'] != 'admin':
                 try:
-                    remainingsum = update.update_remainingsum(cursor, request.COOKIES['ID'], request.POST['amount'])
-                    ret_dict["remainingsum"] = str(remainingsum)
+                    if request.POST['role'] == 'charge':
+                        ret_dict["remainingsum"] = str(update.update_remainingsum(cursor, request.COOKIES['ID'], request.POST['amount']))
+                    elif request.POST['role'] == 'passwd':
+                        ret_dict['data'] = int(update.update_passwd(cursor, request.COOKIES['ID'], request.POST['new_passwd']))
+                    elif request.POST['role'] == 'update':
+                        ret_dict['data'] = int(update.update_card(cursor, request.COOKIES['ID'], request.POST['new_passwd']))
+                    elif request.POST['method'] == "select":
+                        if request.POST['role'] == 'record':
+                            ret_dict['data'] = toDataDict(select.select_v_record(cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'recordtm')
+                        elif request.POST['role'] == 'access':
+                            ret_dict['data'] = toDataDict(select.select_v_access(cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'accesstm')
+                        elif request.POST['role'] == 'consume':
+                            ret_dict['data'] = toDataDict(select.select_v_consume(cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'consumetm') 
                     ret_dict['ret'] = 1
                 except Exception:
                     ret_dict['ret'] = 0

@@ -99,33 +99,75 @@
             <h1>首页</h1>
           </div>
         </section>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="card card-statistic-2">
-            <div class="card-icon shadow-warning bg-warning">
-              <i class="fas fa-wallet"></i>
-            </div>
-            <div class="card-wrap">
-              <div class="card-header">
-                <h4>卡内余额</h4>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card card-statistic-2">
+              <div class="card-icon shadow-warning bg-warning">
+                <i class="fas fa-wallet"></i>
               </div>
-              <div class="card-body">
-                <span class="counter" id="remainingsum">{{ remainingsum | safe }}</span>元
-              </div>
-              <div class="card-stats">
-                <div class="card-stats-title" style="padding-top: 0;padding-bottom: 4px;">
-                  <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                      <li class="breadcrumb-item active" aria-current="page">今日已用: 0 元</li>
-                    </ol>
-                  </nav>
+              <div class="card-wrap">
+                <div class="card-header">
+                  <h4>卡内余额</h4>
+                </div>
+                <div class="card-body">
+                  <span class="counter" id="remainingsum">{{ remainingsum | safe }}</span>元
+                </div>
+                <div class="card-stats">
+                  <div class="card-stats-title" style="padding-top: 0;padding-bottom: 4px;">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb">
+                        <li class="breadcrumb-item active" aria-current="page">今日已用: 0 元</li>
+                      </ol>
+                    </nav>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    <div align="center">
+                      <input type="submit" id="charge_button" class="btn btn-icon icon-left btn-primary" value="余额充值" />
+                      <input type="submit" id="passwd_button" class="btn btn-icon icon-left btn-primary" value="密码修改" />
+                      <input type="submit" id="update_button" class="btn btn-icon icon-left btn-primary" value="挂失补办" />
+                    </div>
+                  </form>
                 </div>
               </div>
-              <div class="buttons">
-                <form action="javascript:void(0);" method="POST">
-                  <div align="center">
-                    <input type="submit" id="charge_button" class="btn btn-icon icon-left btn-primary" value="充值" />
-                  </div>
-                </form>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card" align="center">
+              <div>&nbsp;</div>
+              <h3>信息查询</h3>
+              <div class="card-wrap">
+                <div id="table-div"></div>
+                <div>&nbsp;</div>
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    <div>
+                      <label for="select-role">功能&#12288;&#12288;</label>
+                      <select class="custom-select input-group-append col-6" name="rank" id="select-role" required=""
+                        style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;">
+                        <option value="consume" selected="">消费记录</option>
+                        <option value="access">楼寝记录</option>
+                        <option value="record">出入校记录</option>
+                      </select>
+                    </div>
+                    <div id="start-end">
+                      <div>
+                        <label for="start">起始时间</label>
+                        <input id="start" type="date" class="form-control col-6" style="display: inline;" />
+                      </div>
+                      <div>
+                        <label for="end">终止时间</label>
+                        <input id="end" type="date" class="form-control col-6" style="display: inline;" />
+                      </div>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div align="center">
+                      <input type="submit" id="select_button" class="btn btn-icon icon-left btn-primary" value="查询" />
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -165,6 +207,7 @@
             dataType: "json",
             data: {
               amount: Number(result["value"]),
+              role: "charge",
               csrfmiddlewaretoken: csrfToken,
             },
             success: function (data) {
@@ -185,6 +228,102 @@
 
     })
   });
+  $('#passwd_button').click(function () {
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>新密码：</p><input placeholder='新密码' id='new_passwd_input'></input></div>";
+    swal({
+      title: '修改密码',
+      html: html,
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      showCancelButton: true,
+    }).then(function (result) {
+      if ("value" in result) {
+        var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+        var new_passwd = $("#new_passwd_input").val();
+        $.ajax({
+          type: "POST",
+          url: "/user",
+          dataType: "json",
+          data: {
+            amount: Number(result["value"]),
+            new_passwd: new_passwd,
+            role: "passwd",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data.ret) {
+              swal('修改成功', "您的密码已更新", 'success');
+            }
+            else {
+              swal('修改失败', "请输入合适长度的密码", 'error');
+            }
+          }
+        });
+      }
+    })
+  });
+  $('#update_button').click(function () {
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>新密码：</p><input placeholder='新密码' id='new_passwd_input'></input></div>";
+    swal({
+      title: '挂失补办',
+      html: html,
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      showCancelButton: true,
+    }).then(function (result) {
+      if ("value" in result) {
+        var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+        var new_passwd = $("#new_passwd_input").val();
+        $.ajax({
+          type: "POST",
+          url: "/user",
+          dataType: "json",
+          data: {
+            amount: Number(result["value"]),
+            new_passwd: new_passwd,
+            role: "update",
+            csrfmiddlewaretoken: csrfToken,
+          },
+          success: function (data) {
+            if (data.ret) {
+              swal('补办成功', "您的一卡通已更新", 'success');
+              $("#remainingsum")[0].innerText = 0;
+            }
+            else {
+              swal('补办失败', "请输入合适长度的密码", 'error');
+            }
+          }
+        });
+      }
+    })
+  });
+  $('#select_button').click(function () {
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var role = $("#select-role").val();
+    $.ajax({
+      type: "POST",
+      url: "/user",
+      dataType: "json",
+      data: {
+        role: role,
+        method: "select",
+        start: $("#start").val(),
+        end: $("#end").val(),
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data['ret'] != 0) {
+          swal("查询成功", "", "success");
+          showTable("table-div", data['data'])
+        }
+        else {
+          swal("查询失败", "请联系网站管理员汇报错误", "error");
+        }
+      }
+    });
+  });
+
+
   if (window.screen.width < 600) {
     var target = document.getElementById("sidebar-button");
     $('body').addClass('sidebar-mini');
@@ -196,13 +335,3 @@
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
 </script>
-
-<!-- <script>
-  Swal.fire({
-    title: '<strong>记录</strong>',
-    type: 'info',
-    html: "<div><input></input></div><div><input></input></div>", // HTML
-    focusConfirm: true, //聚焦到确定按钮
-    showCloseButton: true,//右上角关闭
-})
-</script> -->
