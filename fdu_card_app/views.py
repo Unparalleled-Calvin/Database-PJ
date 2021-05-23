@@ -150,6 +150,29 @@ def user(request):
                             ret_dict['data'] = toDataDict(select.select_others(cursor))
                         elif request.POST['role'] == 'profit':
                             ret_dict['data'] = toDataDict(select.select_profit(cursor, request.POST['start'], request.POST['end']))
+                        elif request.POST['role'] == 'record_id':
+                            ret_dict['data'] = toDataDict(select.select_v_record(cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'recordtm')
+                        elif request.POST['role'] == 'access_id':
+                            ret_dict['data'] = toDataDict(select.select_v_access(cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'accesstm')
+                        elif request.POST['role'] == 'consume_id':
+                            ret_dict['data'] = toDataDict(select.select_v_consume(cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'consumetm')                   
+                    if request.POST['method'] == "update":
+                        if request.POST['role'] == "passwd":
+                            ret_dict['data'] = int(update.default_passwd(cursor, request.POST['ID']))
+                        elif request.POST['role'] == "valid1":
+                            ret_dict['data'] = int(update.update_valid1(cursor, request.POST['ID']))
+                        elif request.POST['role'] == "valid2":
+                            ret_dict['data'] = int(update.update_valid2(cursor, request.POST['ID']))
+                        elif request.POST['role'] == "cdno":
+                            ret_dict['data'] = int(update.update_cdno(cursor, request.POST['ID'], request.POST['info']))
+                        elif request.POST['role'] == "class":
+                            ret_dict['data'] = int(update.update_class(cursor, request.POST['ID'], request.POST['info']))
+                        elif request.POST['role'] == "rank":
+                            ret_dict['data'] = int(update.update_rank(cursor, request.POST['ID'], request.POST['rank']))
+                        elif request.POST['role'] == "work":
+                            ret_dict['data'] = int(update.update_work(cursor, request.POST['ID'], request.POST['info']))
+                        elif request.POST['role'] == "delete_person":
+                            ret_dict['data'] = int(delete.delete_person(cursor, request.POST['ID']))
                     ret_dict['ret'] = 1
                 except Exception:
                     ret_dict['ret'] = 0

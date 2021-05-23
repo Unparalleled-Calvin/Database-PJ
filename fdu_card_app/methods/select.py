@@ -60,7 +60,7 @@ def select_v_access(cursor, id, start, end):
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    keylist = ['id', 'name', 'dno', 'accesstm', 'amount']
+    keylist = ['id', 'name', 'dno', 'accesstm']
     data = ret(keylist, rows)
     heads = ['学工号', '姓名', '宿舍', '时间']
     return (heads, [keylist], [data])

@@ -99,39 +99,100 @@
             <h1>管理</h1>
           </div>
         </section>
-        <div class="col-lg-6 col-md-6 col-sm-12">
-          <div class="card" align="center">
-            <div>&nbsp;</div>
-            <h3>信息查询</h3>
-            <div class="card-wrap">
-              <div id="table-div"></div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card" align="center">
               <div>&nbsp;</div>
-              <div class="buttons">
-                <form action="javascript:void(0);" method="POST">
-                  <div>
-                    <select class="custom-select input-group-append col-5" name="rank" id="role" required="" style="border-top-right-radius: .25rem;
-                          border-bottom-right-radius: .25rem;" onchange="javascript:show();">
-                      <option value="student" selected="">所有学生</option>
-                      <option value="teacher">所有教授</option>
-                      <option value="others">所有外来人员</option>
-                      <option value="profit">各餐厅营业额</option>
-                    </select>
-                    <div id="start-end" style="display: none;">
-                      <div>
-                        <label for="start">起始时间</label>
-                        <input id="start" type="date" class="custom-select input-group-append col-6" />
+              <h3>信息查询</h3>
+              <div class="card-wrap">
+                <div id="table-div"></div>
+                <div>&nbsp;</div>
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    <div>
+                      <label for="select-role">功能&#12288;&#12288;</label>
+                      <select class="custom-select input-group-append col-6" name="rank" id="select-role" required=""
+                        style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;" onchange="javascript:select_show();">
+                        <option value="student" selected="">所有学生</option>
+                        <option value="teacher">所有教授</option>
+                        <option value="others">所有外来人员</option>
+                        <option value="profit">各餐厅营业额</option>
+                        <option value="record_id">出入校记录</option>
+                        <option value="access_id">寝室门禁记录</option>
+                        <option value="consume_id">餐厅消费记录</option>
+                      </select>
+                      <div id="ID-input" style="display: none;">
+                        <label for="ID_input">学工号&#12288;</label>
+                        <input id="ID_input" type="text" class="form-control col-6" style="display: inline;" />
                       </div>
-                      <div>
-                        <label for="end">终止时间</label>
-                        <input id="end" type="date" class="custom-select input-group-append col-6" />
+                      <div id="start-end" style="display: none;">
+                        <div>
+                          <label for="start">起始时间</label>
+                          <input id="start" type="date" class="form-control col-6" style="display: inline;" />
+                        </div>
+                        <div>
+                          <label for="end">终止时间</label>
+                          <input id="end" type="date" class="form-control col-6" style="display: inline;" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div>&nbsp;<div>
-                      <div align="center">
-                        <input type="submit" id="select_button" class="btn btn-icon icon-left btn-primary" value="查询" />
+                    <div>&nbsp;</div>
+                    <div align="center">
+                      <input type="submit" id="select_button" class="btn btn-icon icon-left btn-primary" value="查询" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card" align="center">
+              <div>&nbsp;</div>
+              <h3>信息更新</h3>
+              <div class="card-wrap">
+                <div>&nbsp;</div>
+                <div class="buttons">
+                  <form action="javascript:void(0);" method="POST">
+                    <div>
+                      <label for="update-role">功能&#12288;&#12288;</label>
+                      <select class="custom-select input-group-append col-6" name="rank" id="update-role" required=""
+                        style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;" onchange="javascript:update_show();">
+                        <option value="passwd" selected="">密码重置</option>
+                        <option value="valid2">取消进校权限</option>
+                        <option value="valid1">授予进校权限</option>
+                        <option value="cdno">学生寝室分配</option>
+                        <option value="class">学生班级更新</option>
+                        <option value="rank">教师职称更新</option>
+                        <option value="work">外来人员工作更新</option>
+                        <option value="delete_person">移除人员</option>
+                      </select>
+                      <div id="ID-update">
+                        <label for="ID_update">学工号&#12288;</label>
+                        <input id="ID_update" type="text" class="form-control col-6" style="display: inline;" />
                       </div>
-                </form>
+                      <div id="info-input" style="display: none;">
+                        <label for="info" id="info-label">新密码&#12288;</label>
+                        <input id="info" type="text" class="form-control col-6" style="display: inline;" />
+                      </div>
+                      <div id="rank-input" style="display: none;">
+                        <label for="rank_postfix">职称&#12288;&#12288;</label>
+                        <select class="custom-select input-group-append col-6" name="rank" id="rank" required="" style="border-top-right-radius: .25rem;
+                          border-bottom-right-radius: .25rem;display: inline;">
+                          <option value="assistant" selected="">助教</option>
+                          <option value="lecturer">讲师</option>
+                          <option value="associate professor">副教授</option>
+                          <option value="professor">教授</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div align="center">
+                      <input type="submit" id="update_button" class="btn btn-icon icon-left btn-primary" value="更新" />
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -169,7 +230,7 @@
   showTable("table-div", data);
   $("#select_button").on('click', function () {
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-    var role = $('#role').val();
+    var role = $('#select-role').val();
     $('#table-div').empty()
     $.ajax({
       type: "POST",
@@ -178,6 +239,7 @@
       data: {
         method: "select",
         role: role,
+        ID: $("#ID_input").val(),
         start: $("#start").val(),
         end: $("#end").val(),
         csrfmiddlewaretoken: csrfToken,
@@ -193,15 +255,79 @@
       }
     });
   });
+  $("#update_button").on('click', function () {
+    var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+    var role = $('#update-role').val();
+    $.ajax({
+      type: "POST",
+      url: "user",
+      dataType: "json",
+      data: {
+        method: "update",
+        role: role,
+        ID: $("#ID_update").val(),
+        info: $("#info").val(),
+        rank: $("#rank").val(),
+        csrfmiddlewaretoken: csrfToken,
+      },
+      success: function (data) {
+        if (data['ret'] != 0) {
+          swal("更新成功", "", "success");
+        }
+        else {
+          swal("更新失败", "请检查输入值是否违反约束", "error");
+        }
+      }
+    });
+  });
 </script>
 
 <script>
-  function show(){
-    if($("#role").val() == "profit") {
+  function select_show() {
+    var role = $("#select-role").val();
+    if (role == "profit") {
       $("#start-end")[0].style.display = "block";
     }
-    else{
+    else if (role == "record_id" || role == "access_id" || role == "consume_id") {
+      $("#start-end")[0].style.display = "block";
+      $("#ID-input")[0].style.display = "block"
+    }
+    else {
       $("#start-end")[0].style.display = "none";
+      $("#ID-input")[0].style.display = "none"
+    }
+  }
+  function update_show() {
+    var role = $("#update-role").val();
+    var info_label = $("#info-label")[0];
+    var info_input = $("#info-input")[0];
+    var rank_input = $("#rank-input")[0];
+    if (role == "passwd") {
+      info_input.style.display = "none";
+    }
+    else if (role == "valid1" || role == "valid2" || role == "delete_person") {
+      info_input.style.display = "none";
+    }
+    else if (role == "cdno") {
+      info_label.innerHTML = "寝室号&#12288;";
+      info_input.style.display = "inline";
+    }
+    else if (role == "class") {
+      info_label.innerHTML = "班级&#12288;&#12288;";
+      info_input.style.display = "inline";
+    }
+    else if (role == "rank") {
+      info_input.style.display = "none";
+    }
+    else if (role == "work") {
+      info_label.innerHTML = "工作事务";
+      info_input.style.display = "inline";
+    }
+    if (role == "rank") {
+      rank_input.style.display = "block"
+    }
+    else {
+      rank_input.style.display = "none"
     }
   }
 </script>
