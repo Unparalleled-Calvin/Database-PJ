@@ -13,6 +13,14 @@ def ret(keylist, rows):
     return data
 
 
+# 查询id
+def select_id(cursor, id):
+    sql = "select * from card where ID = '{}'".format(id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows[0][0]
+
+
 # 今日已用
 def select_amount(cursor, id):
     sql = "select sum(amount) from v_consume where ID = '{}' and consumetm::date = now()::date".format(
