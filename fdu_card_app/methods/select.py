@@ -49,7 +49,7 @@ def select_v_name(cursor, id):
 
 # 查询食堂消费信息
 def select_v_consume(cursor, id, start, end):
-    sql = "select * from v_consume where ID = '{}' and consumetm between '{}' and '{}'".format(
+    sql = "select * from v_consume where ID = '{}' and consumetm::date between '{}' and '{}' order by consumetm".format(
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
@@ -61,7 +61,7 @@ def select_v_consume(cursor, id, start, end):
 
 # 查询校门进出信息
 def select_v_record(cursor, id, start, end):
-    sql = "select * from v_record where ID = '{}' and recordtm between '{}' and '{}'".format(
+    sql = "select * from v_record where ID = '{}' and recordtm::date between '{}' and '{}' order by recordtm".format(
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
@@ -73,7 +73,7 @@ def select_v_record(cursor, id, start, end):
 
 # 查询宿舍门禁信息
 def select_v_access(cursor, id, start, end):
-    sql = "select * from v_access where ID = '{}' and accesstm between '{}' and '{}'".format(
+    sql = "select * from v_access where ID = '{}' and accesstm::date between '{}' and '{}' order by recordtm".format(
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
