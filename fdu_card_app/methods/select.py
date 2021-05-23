@@ -13,6 +13,15 @@ def ret(keylist, rows):
     return data
 
 
+# 今日已用
+def select_amount(cursor, id):
+    sql = "select sum(amount) from v_consume where ID = '{}' and consumetm::date = now()::date".format(
+        id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows[0][0]
+
+
 # 判断登录的用户名与密码是否正确
 def check_identity(cursor, id, passwd):
     sql = "select ID, passwd from person natural join card where ID = '{}' and passwd = '{}' and valid <> 0".format(
