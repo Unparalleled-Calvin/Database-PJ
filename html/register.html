@@ -23,143 +23,201 @@
     <script src="{% static '/js/bootstrap.min.js' %}"></script>
     <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
     <script src="{% static '/js/jquery.pwstrength.min.js' %}"></script>
+    <script src="{% static '/js/gargets.js' %}"></script>
 </head>
 
 <body>
     <div id="app">
-        <section class="section">
-            <div class="container mt-5">
-                <div class="row">
-                    <div
-                        class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
-                        <div class="login-brand">
-                            <img src="{% static '/images/logo.png'%}" alt="logo" width="100"
-                                class="shadow-light rounded-circle">
+        <div class="main-wrapper">
+            <div class="navbar-bg"></div>
+            <nav class="navbar navbar-expand-lg main-navbar">
+                <form class="form-inline mr-auto">
+                    <ul class="navbar-nav mr-3">
+                        <li><a href="#" id="sidebar-button" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+                        </li>
+                    </ul>
+                </form>
+                <ul class="navbar-nav navbar-right">
+                    <li class="dropdown dropdown-list-toggle"></li>
+                    <li class="dropdown"><a href="#" data-toggle="dropdown"
+                            class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                            <img alt="image" src="{% static '/images/g' %}" class="rounded-circle mr-1">
+                            <div class="d-sm-none d-lg-inline-block" id="name">Hi</div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-divider"></div>
+                            <a href="logout" class="dropdown-item has-icon text-danger">
+                                <i class="fas fa-sign-out-alt"></i> 退出登录
+                            </a>
                         </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="main-sidebar sidebar-style-2" tabindex="1" style="overflow: hidden; outline: none;">
+                <aside id="sidebar-wrapper">
+                    <div class="sidebar-brand">
+                        <a href=""> </a>
+                    </div>
+                    <div class="sidebar-brand sidebar-brand-sm">
+                        <a href="">菜单</a>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a class="nav-link" href="/user"><i class="fas fa-school"></i>
+                                <span id="user-span">首页</span></a></li>
+                        <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
+                                <span id="canteen-span">用餐</span></a></li>
+                        <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
+                                <span id="leave-span">离校</span></a></li>
+                        <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
+                                <span id="access-span">回寝</span></a></li>
+                        <li id="register-span" style="display: none;" class="active"><a class="nav-link"
+                                href="register"><i class="fas fa-puzzle-piece"></i>
+                                <span>注册</span></a></li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="main-content">
+                <section class="section">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div
+                                class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+                                <div class="login-brand">
+                                    <img src="{% static '/images/logo.png'%}" alt="logo" width="100"
+                                        class="shadow-light rounded-circle">
+                                </div>
 
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h4>注册</h4>
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h4>注册</h4>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <form action="javascript:void(0);" method="POST" class="needs-validation"
+                                            novalidate="">
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                                    <label for="ID">学工号</label>
+                                                    <div class="input-group">
+                                                        <input type="text" id="ID" class="form-control col-7"
+                                                            required="">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                                    <label for="name">姓名</label>
+                                                    <input id="name-input" type="text" class="form-control col-7" name="name"
+                                                        required="" autofocus="">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12">
+                                                    <label for="identity">身份</label>
+                                                    <div class="input-group">
+                                                        <select class="custom-select input-group-append col-5"
+                                                            name="identity_postfix" id="identity_postfix" required=""
+                                                            style="border-top-right-radius: .25rem;
+                              border-bottom-right-radius: .25rem;" onchange="javascript:show();">
+                                                            <option value="student" selected="">学生</option>
+                                                            <option value="teacher">教师</option>
+                                                            <option value="others">外来人员</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12"
+                                                    style="display:none;" id="birth_input">
+                                                    <label for="birth">出生年月</label>
+                                                    <input id="birth" type="date" class="form-control" name="birth"
+                                                        required="">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12"
+                                                    style="display:none;" id="rank_input">
+                                                    <label for="rank_postfix">职称</label>
+                                                    <div class="input-group">
+                                                        <select class="custom-select input-group-append col-5"
+                                                            name="rank" id="rank" required="" style="border-top-right-radius: .25rem;
+                              border-bottom-right-radius: .25rem;">
+                                                            <option value="assistant" selected="">助教</option>
+                                                            <option value="lecturer">讲师</option>
+                                                            <option value="associate professor">副教授</option>
+                                                            <option value="professor">教授</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12"
+                                                    style="display:inline;" id="enrolmentdt_input">
+                                                    <label for="enrolmentdt">入学时间</label>
+                                                    <input id="enrolmentdt" type="date" class="form-control"
+                                                        name="enrolmentdt" required="">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12"
+                                                    style="display:inline;" id="stuclass_input">
+                                                    <label for="stuclass">班级</label>
+                                                    <input id="stuclass" type="text" class="form-control"
+                                                        name="stuclass" required="">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12"
+                                                    style="display:inline;" id="dormitory_input">
+                                                    <label for="dormitory">寝室</label>
+                                                    <input id="dormitory" type="text" class="form-control"
+                                                        name="dormitory" required="">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-sm-12 col-xs-12"
+                                                    style="display:none;" id="work_input">
+                                                    <label for="work">工作事由</label>
+                                                    <input id="work" type="test" class="form-control" name="work"
+                                                        required="">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" name="agree" class="custom-control-input"
+                                                        id="agree" checked="checked" required="">
+                                                    <label class="custom-control-label" for="agree">注册即代表同意 <a
+                                                            href="javascript:void(0);"
+                                                            id="TermsOfService">服务条款</a></label>
+                                                    <div class="invalid-feedback">
+                                                        请阅读服务条款并勾选
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <button id="register-confirm" class="btn btn-primary btn-lg btn-block">
+                                                    注册
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="card-body">
-                                <form action="javascript:void(0);" method="POST" class="needs-validation" novalidate="">
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="ID">学工号</label>
-                                            <div class="input-group">
-                                                <input type="text" id="ID" class="form-control col-7" required="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="name">姓名</label>
-                                            <input id="name" type="text" class="form-control col-7" name="name" required=""
-                                                autofocus="">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12">
-                                            <label for="identity">身份</label>
-                                            <div class="input-group">
-                                                <select class="custom-select input-group-append col-5"
-                                                    name="identity_postfix" id="identity_postfix" required="" style="border-top-right-radius: .25rem;
-                          border-bottom-right-radius: .25rem;" onchange="javascript:show();">
-                                                    <option value="student" selected="">学生</option>
-                                                    <option value="teacher">教师</option>
-                                                    <option value="others">外来人员</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
-                                            id="birth_input">
-                                            <label for="birth">出生年月</label>
-                                            <input id="birth" type="date" class="form-control" name="birth"
-                                                required="">
-                                        </div>
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
-                                            id="rank_input">
-                                            <label for="rank_postfix">职称</label>
-                                            <div class="input-group">
-                                                <select class="custom-select input-group-append col-5"
-                                                    name="rank" id="rank" required="" style="border-top-right-radius: .25rem;
-                          border-bottom-right-radius: .25rem;">
-                                                    <option value="assistant" selected="">助教</option>
-                                                    <option value="lecturer">讲师</option>
-                                                    <option value="associate professor">副教授</option>
-                                                    <option value="professor">教授</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:inline;"
-                                            id="enrolmentdt_input">
-                                            <label for="enrolmentdt">入学时间</label>
-                                            <input id="enrolmentdt" type="date" class="form-control" name="enrolmentdt"
-                                                required="">
-                                        </div>
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:inline;"
-                                            id="stuclass_input">
-                                            <label for="stuclass">班级</label>
-                                            <input id="stuclass" type="text" class="form-control" name="stuclass"
-                                                required="">
-                                        </div>
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:inline;"
-                                            id="dormitory_input">
-                                            <label for="dormitory">寝室</label>
-                                            <input id="dormitory" type="text" class="form-control" name="dormitory"
-                                                required="">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-lg-6 col-sm-12 col-xs-12" style="display:none;"
-                                            id="work_input">
-                                            <label for="work">工作事由</label>
-                                            <input id="work" type="test" class="form-control" name="work" required="">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="agree" class="custom-control-input" id="agree"
-                                                checked="checked" required="">
-                                            <label class="custom-control-label" for="agree">注册即代表同意 <a
-                                                    href="javascript:void(0);" id="TermsOfService">服务条款</a></label>
-                                            <div class="invalid-feedback">
-                                                请阅读服务条款并勾选
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <button id="register-confirm" class="btn btn-primary btn-lg btn-block">
-                                            注册
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="mt-5 text-muted text-center">
-                            已经有账号了？<a href="/login">马上登录 👉</a>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
-        </section>
+        </div>
+    </div>
+    <div id="app">
+
     </div>
 
 </body>
 <script>
-
+    var name = {{ name | safe }};
+    document.getElementById('name').innerHTML = ("Hi, " + name);
     function register() {
         var csrfToken = $("[name='csrfmiddlewaretoken']").val();
         $.ajax({
@@ -167,7 +225,7 @@
             url: "/register",
             dataType: "json",
             data: {
-                name: $("#name").val(),
+                name: $("#name-input").val(),
                 ID: $('#ID').val(),
                 identity: $("#identity_postfix").val(),
                 enrolmentdt: $("#enrolmentdt").val(),
@@ -184,10 +242,7 @@
                         type: 'success',
                         title: '注册成功',
                         text: data.msg,
-                        showCloseButton: true,
-                        onClose: () => {
-                            window.location.assign('/login')
-                        }
+                        showCloseButton: true
                     });
                 } else {
                     swal('出错了', data.msg, 'error');
@@ -208,6 +263,13 @@
 </script>
 
 <script>
+    if (getCookieByString('ID') == 'admin') {
+        $("#user-span")[0].innerText = "管理";
+        $("#canteen-span")[0].innerText = "餐厅";
+        $("#leave-span")[0].innerText = "校门";
+        $("#access-span")[0].innerText = "楼寝";
+        $("#register-span")[0].style.display = "block";
+    }
     function show() {
         var sel_val = document.getElementById('identity_postfix').value;
         var birth_input = document.getElementById('birth_input');
@@ -215,9 +277,9 @@
         var enrolmentdt_input = document.getElementById('enrolmentdt_input');
         var stuclass_input = document.getElementById('stuclass_input');
         var work_input = document.getElementById('work_input');
-        if (sel_val == 'teacher') { birth_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none"}
-        if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none';  stuclass_input.style.display = 'inline'; dormitory_input.style.display = "inline"}
-        if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none"}
+        if (sel_val == 'teacher') { birth_input.style.display = 'inline'; rank_input.style.display = 'inline'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'none'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none" }
+        if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none'; stuclass_input.style.display = 'inline'; dormitory_input.style.display = "inline" }
+        if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none" }
     }
 </script>
 

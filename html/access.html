@@ -89,13 +89,15 @@
           </div>
           <ul class="sidebar-menu">
             <li><a class="nav-link" href="/user"><i class="fas fa-school"></i>
-                <span>首页</span></a></li>
+                <span id="user-span">首页</span></a></li>
             <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
-                <span>用餐</span></a></li>
+                <span id="canteen-span">用餐</span></a></li>
             <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
-                <span>离校</span></a></li>
+                <span id="leave-span">离校</span></a></li>
             <li class="active"><a class="nav-link" href="access"><i class="fas fa-building"></i>
-                <span>回寝</span></a></li>
+                <span id="access-span">回寝</span></a></li>
+            <li id="register-span" style="display: none;"><a class="nav-link" href="register"><i class="fas fa-puzzle-piece"></i>
+                <span>注册</span></a></li>
           </ul>
         </aside>
       </div>
@@ -105,19 +107,6 @@
             <h1>园区</h1>
           </div>
           <div class="row" id="window_row">
-            <!-- <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <i class="fa fa-window-close fa-lg" align="right" style="cursor:pointer;Margin:7px;"></i>
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    <div class="center">
-                      <input type="submit" id="order_button1"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div> -->
           </div>
         </section>
       </div>
@@ -247,6 +236,13 @@
 </script>
 
 <script>
+  if (getCookieByString('ID') == 'admin') {
+    $("#user-span")[0].innerText = "管理";
+    $("#canteen-span")[0].innerText = "餐厅";
+    $("#leave-span")[0].innerText = "校门";
+    $("#access-span")[0].innerText = "楼寝";
+    $("#register-span")[0].style.display = "block";
+  }
   if (getCookieByString('ID') == 'admin') {
     Array.from(document.getElementsByClassName('valid_button')).forEach(element => {
       element.value = "编辑";

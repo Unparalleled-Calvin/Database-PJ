@@ -48,11 +48,12 @@ def register(request):
         else:
             return False
         return True
-            
+    if request.COOKIES['ID'] != 'admin':
+        return HttpResponseRedirect('/login')
     if request.method == 'POST':
         if request.POST['name'] == ''  or request.POST['ID'] == '' :
             ret_dict['ret'] = 2
-            ret_dict['msg'] = '用户名和学工号不能为空'
+            ret_dict['msg'] = '学工号和姓名不能为空'
         elif ID_invalid(request.POST):
             ret_dict['ret'] = 2
         elif request.POST['identity'] == 'student' and request.POST['enrolmentdt'] == '' :
@@ -72,7 +73,7 @@ def register(request):
             ret_dict['msg'] = '工作事由不能为空'
         else:
             ret_dict['ret'] = 1
-            ret_dict['msg'] = '即将跳转至用户界面'
+            ret_dict['msg'] = '用户的初始密码为：000000'
         if ret_dict['ret'] == 1:
             try:
                 insert.insert_person(cursor, request.POST['ID'], request.POST['name'])
@@ -92,10 +93,11 @@ def register(request):
             else:
                 connection.commit()
         ret = JsonResponse(ret_dict)
-        ret.set_cookie('ID', request.POST['ID'], expires = datetime.now() + timedelta(minutes = 5))
         return ret
     else:
-        return render(request, "register.html")
+        data = select.select_information(cursor, request.COOKIES['ID'])[2][0][0]
+        data['name'] = "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
+        return render(request, "register.html", data)
 
 def reset(request):
     if request.method == 'POST':
@@ -162,10 +164,13 @@ def user(request):
                         elif request.POST['role'] == 'profit':
                             ret_dict['data'] = toDataDict(select.select_profit(cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'record_id':
+                            select.select_v_name(request.POST['ID'])
                             ret_dict['data'] = toDataDict(select.select_v_record(cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'recordtm')
                         elif request.POST['role'] == 'access_id':
+                            select.select_v_name(request.POST['ID'])
                             ret_dict['data'] = toDataDict(select.select_v_access(cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'accesstm')
                         elif request.POST['role'] == 'consume_id':
+                            select.select_v_name(request.POST['ID'])
                             ret_dict['data'] = toDataDict(select.select_v_consume(cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'consumetm')                   
                     if request.POST['method'] == "update":
                         if request.POST['role'] == "passwd":
@@ -192,6 +197,7 @@ def user(request):
             data = select.select_information(cursor, request.COOKIES['ID'])[2][0][0]
             data['name'] = "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
             data['data'] = toDataDict(select.select_student(cursor), "enrolmentdt")
+            data['today_consume'] = select.select_amount(cursor, request.COOKIES['ID'])
             return render(request, "user.html" if request.COOKIES['ID'] != 'admin' else 'admin.html', data)
     
 def canteen(request):
