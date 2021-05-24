@@ -27,7 +27,10 @@ def select_amount(cursor, id):
         id)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows[0][0]
+    if rows[0][0] == None:
+        return 0
+    else:
+        return rows[0][0]
 
 
 # 判断登录的用户名与密码是否正确
