@@ -118,11 +118,14 @@
                           border-bottom-right-radius: .25rem;" onchange="javascript:select_show();">
                         <option value="student" selected="">所有学生</option>
                         <option value="teacher">所有教师</option>
-                        <option value="others">所有外来人员</option>
+                        <option value="others">所有其他人员</option>
                         <option value="profit">各餐厅营业额</option>
-                        <option value="record_id">出入校记录</option>
-                        <option value="access_id">寝室门禁记录</option>
-                        <option value="consume_id">餐厅消费记录</option>
+                        <option value="record_all">出入校记录(所有)</option>
+                        <option value="record_id">出入校记录(单人)</option>
+                        <option value="access_all">寝室门禁记录(所有)</option>
+                        <option value="access_id">寝室门禁记录(单人)</option>
+                        <option value="consume_all">餐厅消费记录(所有)</option>
+                        <option value="consume_id">餐厅消费记录(单人)</option>
                       </select>
                       <div id="ID-input" style="display: none;">
                         <label for="ID_input">学工号&#12288;</label>
@@ -259,7 +262,7 @@
           showTable("table-div", data['data'])
         }
         else {
-          swal("查询失败", "该学工号不存在", "error");
+          swal("查询失败", "学工号错误或存在空值", "error");
         }
       }
     });
@@ -296,10 +299,15 @@
     var role = $("#select-role").val();
     if (role == "profit") {
       $("#start-end")[0].style.display = "block";
+      $("#ID-input")[0].style.display = "none"
     }
     else if (role == "record_id" || role == "access_id" || role == "consume_id") {
       $("#start-end")[0].style.display = "block";
       $("#ID-input")[0].style.display = "block"
+    }
+    else if (role == "record_all" || role == "access_all" || role == "consume_all") {
+      $("#start-end")[0].style.display = "block";
+      $("#ID-input")[0].style.display = "none"
     }
     else {
       $("#start-end")[0].style.display = "none";
