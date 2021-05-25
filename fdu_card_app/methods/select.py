@@ -188,3 +188,27 @@ def select_profit(cursor, start, end):
     data = ret(keylist, rows)
     heads = ['餐厅号', '餐厅', '营业额']
     return (heads, [keylist], [data])
+
+
+# 查询各校门进出次数
+def select_record(cursor, start, end):
+    sql = "select gno, gname, inout, count(inout) as times from gate natural join record where recordtm between '{}' and '{}' group by gno, gname, inout".format(
+        start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    keylist = ['gno', 'gname', 'inout', 'times']
+    data = ret(keylist, rows)
+    heads = ['校门号', '校门', '进/出', '次数']
+    return (heads, [keylist], [data])
+
+
+# 查询各寝室门禁次数
+def select_access(cursor, start, end):
+    sql = "select dno, count(*) as times from domitory natural join access where accesstm between '{}' and '{}' group by dno".format(
+        start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    keylist = ['dno', 'times']
+    data = ret(keylist, rows)
+    heads = ['宿舍号', '次数']
+    return (heads, [keylist], [data])
