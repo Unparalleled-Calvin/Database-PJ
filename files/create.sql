@@ -250,3 +250,10 @@ end;
 $$ language plpgsql;
 create trigger update_valid before
 insert on card for each row execute procedure valid_trigger();
+--插入管理员用户
+insert INTO person
+VALUES('admin', 'admin');
+insert into others
+VALUES('admin', 'admin');
+insert into card(ID)
+VALUES('admin')
