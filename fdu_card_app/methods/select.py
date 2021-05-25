@@ -191,7 +191,7 @@ def select_profit(cursor, start, end):
 
 
 # 查询各校门进出次数
-def select_record(cursor, start, end):
+def select_record_times(cursor, start, end):
     sql = "select gno, gname, inout, count(inout) as times from gate natural join record where recordtm between '{}' and '{}' group by gno, gname, inout".format(
         start, end)
     cursor.execute(sql)
@@ -203,7 +203,7 @@ def select_record(cursor, start, end):
 
 
 # 查询各寝室门禁次数
-def select_access(cursor, start, end):
+def select_access_times(cursor, start, end):
     sql = "select dno, count(*) as times from domitory natural join access where accesstm between '{}' and '{}' group by dno".format(
         start, end)
     cursor.execute(sql)
@@ -211,4 +211,40 @@ def select_access(cursor, start, end):
     keylist = ['dno', 'times']
     data = ret(keylist, rows)
     heads = ['宿舍号', '次数']
+    return (heads, [keylist], [data])
+
+
+# 查询所有食堂消费信息
+def select_consume(cursor, start, end):
+    sql = "select * from v_consume where consumetm::date between '{}' and '{}' order by consumetm".format(
+        start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    keylist = ['id', 'name', 'wname', 'cuisineid', 'consumetm', 'amount']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '餐厅', '菜肴', '时间', '金额']
+    return (heads, [keylist], [data])
+
+
+# 查询所有校门进出信息
+def select_record(cursor, start, end):
+    sql = "select * from v_record where recordtm::date between '{}' and '{}' order by recordtm".format(
+        start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    keylist = ['id', 'name', 'gname', 'recordtm', 'inout']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '校门', '时间', '进/出']
+    return (heads, [keylist], [data])
+
+
+# 查询所有宿舍门禁信息
+def select_access(cursor, start, end):
+    sql = "select * from v_access where accesstm::date between '{}' and '{}' order by recordtm".format(
+        start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    keylist = ['id', 'name', 'dno', 'accesstm']
+    data = ret(keylist, rows)
+    heads = ['学工号', '姓名', '宿舍', '时间']
     return (heads, [keylist], [data])
