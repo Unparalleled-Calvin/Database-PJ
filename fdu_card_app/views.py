@@ -196,7 +196,7 @@ def user(request):
                             ret_dict['data'] = toDataDict(select.select_record(
                                 cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'record_count':
-                            ret_dict['data'] = toDataDict(select.select.select_record_times(
+                            ret_dict['data'] = toDataDict(select.select_record_times(
                                 cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'access_all':
                             ret_dict['data'] = toDataDict(select.select_access(
@@ -209,11 +209,14 @@ def user(request):
                                 cursor, request.POST['start'], request.POST['end']))
                     if request.POST['method'] == "update":
                         if request.POST['role'] == "passwd":
-                            ret_dict['data'] = int(update.default_passwd(cursor, request.POST['ID']))
+                            ret_dict['data'] = int(
+                                update.default_passwd(cursor, request.POST['ID']))
                         elif request.POST['role'] == "valid1":
-                            ret_dict['data'] = int(update.update_valid1(cursor, request.POST['ID']))
+                            ret_dict['data'] = int(
+                                update.update_valid1(cursor, request.POST['ID']))
                         elif request.POST['role'] == "valid2":
-                            ret_dict['data'] = int(update.update_valid2(cursor, request.POST['ID']))
+                            ret_dict['data'] = int(
+                                update.update_valid2(cursor, request.POST['ID']))
                         elif request.POST['role'] == "cdno":
                             ret_dict['data'] = int(update.update_cdno(
                                 cursor, request.POST['ID'], request.POST['info']))

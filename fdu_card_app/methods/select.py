@@ -49,12 +49,14 @@ def select_v_name(cursor, id):
     rows = cursor.fetchall()
     return rows[0][0]
 
+
 # 查询是否存在该寝室楼
 def verify_dormitory(cursor, dno):
     sql = "select count(*) from domitory where dno = '{}'".format(dno)
     cursor.execute(sql)
     rows = cursor.fetchall()
     return rows[0][0]
+
 
 # 查询食堂消费信息
 def select_v_consume(cursor, id, start, end):
@@ -82,7 +84,7 @@ def select_v_record(cursor, id, start, end):
 
 # 查询宿舍门禁信息
 def select_v_access(cursor, id, start, end):
-    sql = "select * from v_access where ID = '{}' and accesstm::date between '{}' and '{}' order by recordtm".format(
+    sql = "select * from v_access where ID = '{}' and accesstm::date between '{}' and '{}' order by accesstm".format(
         id, start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
@@ -106,7 +108,7 @@ def check_dormitory(cursor, id):
 
 # 查询各宿舍信息
 def select_dormitory(cursor):
-    sql = "select dno, dadmin, dtel, dfloor from domitory"
+    sql = "select dno, dadmin, dtel, dfloor from domitory order by dno"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['dno', 'dadmin', 'dtel', 'dfloor']
@@ -117,7 +119,7 @@ def select_dormitory(cursor):
 
 # 查询各餐厅信息
 def select_canteen(cursor):
-    sql = "select * from canteen"
+    sql = "select * from canteen order by wno"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['wno', 'wname', 'wadmin', 'wtel']
@@ -128,7 +130,7 @@ def select_canteen(cursor):
 
 # 查询各校门信息
 def select_gate(cursor):
-    sql = "select * from gate"
+    sql = "select * from gate order by gno"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['gno', 'gname', 'gadmin', 'gtel']
@@ -153,7 +155,7 @@ def select_information(cursor, id):
 
 # 查询所有教师信息
 def select_teacher(cursor):
-    sql = "select * from person natural join teacher"
+    sql = "select * from person natural join teacher order by id"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['id', 'name', 'birthday', 'rank']
@@ -164,7 +166,7 @@ def select_teacher(cursor):
 
 # 查询所有学生信息
 def select_student(cursor):
-    sql = "select * from person natural join student"
+    sql = "select * from person natural join student order by id"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['id', 'name', 'enrolmentdt', 'class']
@@ -175,7 +177,7 @@ def select_student(cursor):
 
 # 查询所有其他人员信息
 def select_others(cursor):
-    sql = "select * from person natural join others"
+    sql = "select * from person natural join others order by id"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['id', 'name', 'work']
@@ -186,7 +188,7 @@ def select_others(cursor):
 
 # 查询各餐厅营业额
 def select_profit(cursor, start, end):
-    sql = "select wno, wname, sum(amount) as profit from canteen natural join consume where consumetm between '{}' and '{}' group by wno, wname".format(
+    sql = "select wno, wname, sum(amount) as profit from canteen natural join consume where consumetm between '{}' and '{}' group by wno, wname order by wno".format(
         start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
@@ -198,7 +200,7 @@ def select_profit(cursor, start, end):
 
 # 查询各校门进出次数
 def select_record_times(cursor, start, end):
-    sql = "select gno, gname, inout, count(inout) as times from gate natural join record where recordtm between '{}' and '{}' group by gno, gname, inout".format(
+    sql = "select gno, gname, inout, count(inout) as times from gate natural join record where recordtm between '{}' and '{}' group by gno, gname, inout order by gno".format(
         start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
@@ -210,7 +212,7 @@ def select_record_times(cursor, start, end):
 
 # 查询各寝室门禁次数
 def select_access_times(cursor, start, end):
-    sql = "select dno, count(*) as times from domitory natural join access where accesstm between '{}' and '{}' group by dno".format(
+    sql = "select dno, count(*) as times from domitory natural join access where accesstm between '{}' and '{}' group by dno order by dno".format(
         start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
