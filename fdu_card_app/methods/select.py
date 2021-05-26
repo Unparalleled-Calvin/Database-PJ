@@ -49,6 +49,12 @@ def select_v_name(cursor, id):
     rows = cursor.fetchall()
     return rows[0][0]
 
+# 查询是否存在该寝室楼
+def verify_dormitory(cursor, dno):
+    sql = "select count(*) from domitory where dno = '{}'".format(dno)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    return rows[0][0]
 
 # 查询食堂消费信息
 def select_v_consume(cursor, id, start, end):
@@ -240,7 +246,7 @@ def select_record(cursor, start, end):
 
 # 查询所有宿舍门禁信息
 def select_access(cursor, start, end):
-    sql = "select * from v_access where accesstm::date between '{}' and '{}' order by recordtm".format(
+    sql = "select * from v_access where accesstm::date between '{}' and '{}' order by accesstm".format(
         start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()

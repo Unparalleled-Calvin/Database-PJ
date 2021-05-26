@@ -71,6 +71,9 @@ def register(request):
         elif request.POST['identity'] == 'student' and request.POST['dormitory'] == '':
             ret_dict['ret'] = 2
             ret_dict['msg'] = '寝室楼不能为空'
+        elif request.POST['identity'] == 'student' and select.verify_dormitory(cursor, request.POST['dormitory']) == 0:
+            ret_dict['ret'] = 2
+            ret_dict['msg'] = '寝室楼不存在'
         elif request.POST['identity'] == 'teacher' and request.POST['birth'] == '':
             ret_dict['ret'] = 2
             ret_dict['msg'] = '出生年月不能为空'
@@ -192,24 +195,18 @@ def user(request):
                         elif request.POST['role'] == 'record_all':
                             ret_dict['data'] = toDataDict(select.select_record(
                                 cursor, request.POST['start'], request.POST['end']))
-                        elif request.POST['role'] == 'record_id':
-                            select.select_v_name(cursor, request.POST['ID'])
-                            ret_dict['data'] = toDataDict(select.select_v_record(
-                                cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'recordtm')
+                        elif request.POST['role'] == 'record_count':
+                            ret_dict['data'] = toDataDict(select.select.select_record_times(
+                                cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'access_all':
                             ret_dict['data'] = toDataDict(select.select_access(
+                                cursor, request.POST['start'], request.POST['end']), "accesstm")
+                        elif request.POST['role'] == 'access_count':
+                            ret_dict['data'] = toDataDict(select.select_access_times(
                                 cursor, request.POST['start'], request.POST['end']))
-                        elif request.POST['role'] == 'access_id':
-                            select.select_v_name(cursor, request.POST['ID'])
-                            ret_dict['data'] = toDataDict(select.select_v_access(
-                                cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'accesstm')
                         elif request.POST['role'] == 'consume_all':
                             ret_dict['data'] = toDataDict(select.select_consume(
                                 cursor, request.POST['start'], request.POST['end']))
-                        elif request.POST['role'] == 'consume_id':
-                            select.select_v_name(cursor, request.POST['ID'])
-                            ret_dict['data'] = toDataDict(select.select_v_consume(
-                                cursor, request.POST['ID'], request.POST['start'], request.POST['end']), 'consumetm')
                     if request.POST['method'] == "update":
                         if request.POST['role'] == "passwd":
                             ret_dict['data'] = int(update.default_passwd(cursor, request.POST['ID']))
