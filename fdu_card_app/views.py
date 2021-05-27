@@ -5,6 +5,7 @@ from django.db import connection
 from datetime import datetime, timedelta
 import sys
 import json
+import re
 sys.path.append('.\\fdu_card_app')
 from methods import select  # NOQA:E402
 from methods import insert  # NOQA:E402
@@ -341,5 +342,27 @@ def access(request):
         dnoList.sort()
         return render(request, "access.html",  {
             'dormitory': json.dumps({'dList': dList, "dnoList": dnoList}),
+            'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
+        })
+
+def analysis(request):
+    if 'ID' not in request.COOKIES:
+        return HttpResponseRedirect('/login')
+    elif request.method == 'POST':
+        ret_dict = {}
+        #todo
+        mode = re.compile(".*?(<div.+?></div>).*?<script>(.*?)</script>", re.DOTALL)
+        try:
+            with open(r"./graph.html", "r") as f:
+                result = mode.findall(f.read())
+                ret_dict['div'] = result[0][0]
+                ret_dict['script'] = result[0][1]
+            ret_dict['ret'] = 1
+        except:
+            ret_dict['ret'] = 0
+        ret = JsonResponse(ret_dict)
+        return ret
+    else:
+        return render(request, "analysis.html",  {
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })
