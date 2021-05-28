@@ -43,11 +43,11 @@ def check_identity(cursor, id, passwd):
 
 # 根据id查询用户名
 def select_v_name(cursor, id):
-    sql = "select name from person where ID = '{}'".format(
+    sql = "select name, photo from person where ID = '{}'".format(
         id)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows[0][0]
+    return rows[0]
 
 
 # 查询是否存在该寝室楼
@@ -183,42 +183,6 @@ def select_others(cursor):
     keylist = ['id', 'name', 'work']
     data = ret(keylist, rows)
     heads = ['学工号', '姓名', '工作']
-    return (heads, [keylist], [data])
-
-
-# 查询各餐厅营业额
-def select_profit(cursor, start, end):
-    sql = "select wno, wname, sum(amount) as profit from canteen natural join consume where consumetm between '{}' and '{}' group by wno, wname order by wno".format(
-        start, end)
-    cursor.execute(sql)
-    rows = cursor.fetchall()
-    keylist = ['wno', 'wname', 'profit']
-    data = ret(keylist, rows)
-    heads = ['餐厅号', '餐厅', '营业额']
-    return (heads, [keylist], [data])
-
-
-# 查询各校门进出次数
-def select_record_times(cursor, start, end):
-    sql = "select gno, gname, inout, count(inout) as times from gate natural join record where recordtm between '{}' and '{}' group by gno, gname, inout order by gno".format(
-        start, end)
-    cursor.execute(sql)
-    rows = cursor.fetchall()
-    keylist = ['gno', 'gname', 'inout', 'times']
-    data = ret(keylist, rows)
-    heads = ['校门号', '校门', '进/出', '次数']
-    return (heads, [keylist], [data])
-
-
-# 查询各寝室门禁次数
-def select_access_times(cursor, start, end):
-    sql = "select dno, count(*) as times from domitory natural join access where accesstm between '{}' and '{}' group by dno order by dno".format(
-        start, end)
-    cursor.execute(sql)
-    rows = cursor.fetchall()
-    keylist = ['dno', 'times']
-    data = ret(keylist, rows)
-    heads = ['宿舍号', '次数']
     return (heads, [keylist], [data])
 
 
