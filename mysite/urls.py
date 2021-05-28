@@ -28,4 +28,5 @@ urlpatterns = [
     path('register', views.register),
     path('reset', views.reset),
     path('logout', views.logout),
+    path('analysis', views.analysis),
 ]

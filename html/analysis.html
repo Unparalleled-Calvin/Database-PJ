@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+
+    <link rel="icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static '/images/logo.ico' %}" type="image/x-icon">
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/all.css' %}">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="{% static '/css/style-purple.css' %}">
+    <link rel="stylesheet" href="{% static '/css/components.css' %}">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static '/css/malio.css' %}">
+
+    <title>复旦一卡通</title>
+
+    <!-- C3 chart css -->
+    <link rel="stylesheet" href="{% static '/css/c3.min.css' %}">
+
+    <!-- General JS Scripts -->
+    <script src="{% static '/js/jquery.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.min.js' %}"></script>
+    <!-- Counter Up  -->
+
+    <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static '/js/jquery.js' %}"></script>
+    <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static '/js/gargets.js' %}"></script>
+    <script>
+        $('.counter').counterUp({
+            delay: 10,
+            time: 1000
+        });
+
+
+        setTimeout(loadTrafficChart(), 3000);
+    </script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+<body>
+    <div id="app">
+        <div class="main-wrapper">
+            <div class="navbar-bg"></div>
+            <nav class="navbar navbar-expand-lg main-navbar">
+                <form class="form-inline mr-auto">
+                    <ul class="navbar-nav mr-3">
+                        <li><a href="#" id="sidebar-button" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
+                        </li>
+                    </ul>
+                </form>
+                <ul class="navbar-nav navbar-right">
+                    <li class="dropdown dropdown-list-toggle"></li>
+                    <li class="dropdown"><a href="#" data-toggle="dropdown"
+                            class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                            <img alt="image" src="{% static '/images/g' %}" class="rounded-circle mr-1">
+                            <div class="d-sm-none d-lg-inline-block" id="name">Hi, Calvin</div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-divider"></div>
+                            <a href="logout" class="dropdown-item has-icon text-danger">
+                                <i class="fas fa-sign-out-alt"></i> 退出登录
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="main-sidebar sidebar-style-2" tabindex="1" style="overflow: hidden; outline: none;">
+                <aside id="sidebar-wrapper">
+                    <div class="sidebar-brand">
+                        <a href=""> </a>
+                    </div>
+                    <div class="sidebar-brand sidebar-brand-sm">
+                        <a href="">菜单</a>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a class="nav-link" href="/user"><i class="fas fa-school"></i>
+                                <span id="user-span">首页</span></a></li>
+                        <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
+                                <span id="canteen-span">用餐</span></a></li>
+                        <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
+                                <span id="leave-span">离校</span></a></li>
+                        <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
+                                <span id="access-span">回寝</span></a></li>
+                        <li class="active" id="analysis-span" style="display: none;"><a class="nav-link"
+                                href="analysis"><i class="fas fa-info"></i>
+                                <span>分析</span></a></li>
+                        <li id="register-span" style="display: none;"><a class="nav-link" href="register"><i
+                                    class="fas fa-puzzle-piece"></i>
+                                <span>注册</span></a></li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="main-content">
+                <section class="section">
+                    <div class="section-header">
+                        <h1>分析</h1>
+                    </div>
+                </section>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="card" align="center">
+                            <div>&nbsp;</div>
+                            <h3>数据分析</h3>
+                            <div class="card-wrap">
+                                <div id="table-div"></div>
+                                <div>&nbsp;</div>
+                                <div class="buttons">
+                                    <form action="javascript:void(0);" method="POST">
+                                        <div>
+                                            <label for="analysis-role">功能&#12288;&#12288;</label>
+                                            <select class="custom-select input-group-append col-6" name="rank"
+                                                id="analysis-role" required="" style="border-top-right-radius: .25rem;
+                                      border-bottom-right-radius: .25rem;" onchange="javascript:select_show();">
+                                                <option value="record_count" selected="">各校门出入校记录</option>
+                                                <option value="access_count">各寝室门禁记录</option>
+                                                <option value="profit">各餐厅营业额</option>
+                                            </select>
+                                            <div id="start-end" style="display: block;">
+                                                <div>
+                                                    <label for="start">起始时间</label>
+                                                    <input id="start" type="date" class="form-control col-6"
+                                                        style="display: inline;" />
+                                                </div>
+                                                <div>
+                                                    <label for="end">终止时间</label>
+                                                    <input id="end" type="date" class="form-control col-6"
+                                                        style="display: inline;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>&nbsp;</div>
+                                        <div align="center">
+                                            <input type="submit" id="analysis_button"
+                                                class="btn btn-icon icon-left btn-primary" value="分析" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</head>
+
+<script>
+    if (getCookieByString('ID') == 'admin') {
+        $("#user-span")[0].innerText = "管理";
+        $("#canteen-span")[0].innerText = "餐厅";
+        $("#leave-span")[0].innerText = "校门";
+        $("#access-span")[0].innerText = "楼寝";
+        $("#analysis-span")[0].style.display = "block";
+        $("#register-span")[0].style.display = "block";
+    }
+    $('#sidebar-button').click(function () {
+        var body = $('body')
+        if (body.hasClass('sidebar-mini')) {
+            body.removeClass('sidebar-mini');
+            body.addClass('sidebar-show');
+        } else {
+            body.addClass('sidebar-mini');
+            body.removeClass('sidebar-show');
+        }
+        return false;
+    });
+
+    if (window.screen.width < 600) {
+        var target = document.getElementById("sidebar-button");
+        $('body').addClass('sidebar-mini');
+        target.style.display = "none";
+    }
+</script>
+
+<script>
+    var name = {{ name | safe }};
+    document.getElementById('name').innerHTML = ("Hi, " + name);
+    function select_show() {
+        var role = $("#select-role").val();
+        if (role == "profit") {
+            $("#start-end")[0].style.display = "block";
+        }
+        else if (role == "record_count" || role == "access_count" || role == "consume_count") {
+            $("#start-end")[0].style.display = "block";
+        }
+        else if (role == "record_all" || role == "access_all" || role == "consume_all") {
+            $("#start-end")[0].style.display = "block";
+        }
+        else {
+            $("#start-end")[0].style.display = "none";
+        }
+    }
+    $("#analysis_button").on('click', function () {
+        var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+        var role = $('#analysis-role').val();
+        $('#table-div').empty()
+        $.ajax({
+            type: "POST",
+            url: "analysis",
+            dataType: "json",
+            data: {
+                method: "select",
+                role: role,
+                start: $("#start").val(),
+                end: $("#end").val(),
+                csrfmiddlewaretoken: csrfToken,
+            },
+            success: function (data) {
+                if (data['ret'] != 0) {
+                    swal("查询成功", "", "success");
+                    $("#table-div")[0].innerHTML = data['div']
+                    eval(data['script'])
+                }
+                else {
+                    swal("查询失败", "输入不能存在空值", "error");
+                }
+            }
+        });
+    });
+</script>
