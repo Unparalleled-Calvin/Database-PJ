@@ -26,7 +26,7 @@ def select_profit(cursor, start, end):
     bar.set_global_opts(title_opts=opts.TitleOpts(title='各餐厅营业额'),
                         toolbox_opts=opts.ToolboxOpts(is_show=True))
     bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
-    bar.render(r"..\..\graph.html")
+    bar.render(r"./graph.html")
 
 
 # 查询各校门进出次数
@@ -92,4 +92,4 @@ def select_access_times(cursor, start, end):
     bar.set_global_opts(title_opts=opts.TitleOpts(title='各宿舍号门禁总数'),
                         toolbox_opts=opts.ToolboxOpts(is_show=True))
     bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
-    bar.render(r"..\..\graph.html")
+    bar.render(r"./graph.html")

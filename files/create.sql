@@ -7,7 +7,6 @@
 create TABLE person(
     ID VARCHAR(11) PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    photo VARCHAR(50) DEFAULT 'g',
     check(length(ID) in (5, 6, 11))
 );
 --教师信息表

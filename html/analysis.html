@@ -119,7 +119,7 @@
                                             <label for="analysis-role">功能&#12288;&#12288;</label>
                                             <select class="custom-select input-group-append col-6" name="rank"
                                                 id="analysis-role" required="" style="border-top-right-radius: .25rem;
-                                      border-bottom-right-radius: .25rem;" onchange="javascript:select_show();">
+                                      border-bottom-right-radius: .25rem;" onchange="javascript:void();">
                                                 <option value="record_count" selected="">各校门出入校记录</option>
                                                 <option value="access_count">各寝室门禁记录</option>
                                                 <option value="profit">各餐厅营业额</option>
@@ -185,21 +185,6 @@
 <script>
     var name = {{ name | safe }};
     document.getElementById('name').innerHTML = ("Hi, " + name);
-    function select_show() {
-        var role = $("#select-role").val();
-        if (role == "profit") {
-            $("#start-end")[0].style.display = "block";
-        }
-        else if (role == "record_count" || role == "access_count" || role == "consume_count") {
-            $("#start-end")[0].style.display = "block";
-        }
-        else if (role == "record_all" || role == "access_all" || role == "consume_all") {
-            $("#start-end")[0].style.display = "block";
-        }
-        else {
-            $("#start-end")[0].style.display = "none";
-        }
-    }
     $("#analysis_button").on('click', function () {
         var csrfToken = $("[name='csrfmiddlewaretoken']").val();
         var role = $('#analysis-role').val();

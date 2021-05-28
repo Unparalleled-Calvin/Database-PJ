@@ -43,11 +43,11 @@ def check_identity(cursor, id, passwd):
 
 # 根据id查询用户名
 def select_v_name(cursor, id):
-    sql = "select name, photo from person where ID = '{}'".format(
+    sql = "select name from person where ID = '{}'".format(
         id)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    return rows[0]
+    return rows[0][0]
 
 
 # 查询是否存在该寝室楼

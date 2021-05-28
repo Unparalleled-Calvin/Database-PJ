@@ -7,11 +7,24 @@ import sys
 import json
 import re
 sys.path.append('.\\fdu_card_app')
-from methods import select  # NOQA:E402
-from methods import insert  # NOQA:E402
-from methods import update  # NOQA:E402
-from methods import delete  # NOQA:E402
+from methods import analyse
+from methods import select
+from methods import insert
+from methods import update
+from methods import delete
 cursor = connection.cursor()
+
+# automatic backup
+import os
+from datetime import datetime
+from datetime import date
+from apscheduler.schedulers.background import BackgroundScheduler
+from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+def backup():    
+    os.system("pg_dump -a \"host=127.0.0.1 hostaddr=127.0.0.1 port=5432 user=postgres password=admin dbname=dbpj\" > backup.sql")
+scheduler = BackgroundScheduler()
+scheduler.add_job(backup, 'cron', hour='0', minute='0', args=[])
+scheduler.start()
 
 # Create your views here.
 
@@ -350,7 +363,12 @@ def analysis(request):
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
         ret_dict = {}
-        #todo
+        if request.POST['role'] == 'record_count':
+            analyse.select_record_times(cursor, request.POST['start'], request.POST['end'])
+        elif request.POST['role'] == 'access_count':
+            analyse.select_access_times(cursor, request.POST['start'], request.POST['end'])
+        elif request.POST['role'] == 'profit':
+            analyse.select_profit(cursor, request.POST['start'], request.POST['end'])
         mode = re.compile(".*?(<div.+?></div>).*?<script>(.*?)</script>", re.DOTALL)
         try:
             with open(r"./graph.html", "r") as f:

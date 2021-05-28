@@ -1,3 +1,4 @@
 *.pyc
 /mysite/settings.py
 graph.html
+backup.sql
