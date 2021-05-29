@@ -283,6 +283,8 @@
         if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none'; stuclass_input.style.display = 'inline'; dormitory_input.style.display = "inline" }
         if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none" }
     }
+    fitWindow()
+    $("#name-input").onPositionChanged(function(){fitWindow()});
 </script>
 
 </html>
