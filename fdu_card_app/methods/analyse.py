@@ -101,12 +101,18 @@ def select_cuisineid_times(cursor, start, end):
         start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
+    sql1 = "select 1, 2, 3, 4, 5, 6, 7, 8 except (select distinct cuisineid from consume where consumetm::date between '{}' and '{}')"
+    cursor.execute(sql1)
+    rows1 = cursor.fetchall()
+    for row in rows1:
+        rows.append((row[0]+(0,)))
     rows.sort()
     bar = Bar()
     x = []
     y = []
+    ref = ['盱眙龙虾', '香酥烤肉', '麻婆豆腐', '巴蜀烫捞', '香煎豆干', '草莓慕斯', '柠檬冰饮', '松鼠桂鱼']
     for row in rows:
-        x.append(row[0])
+        x.append(ref[row[0]])
         y.append(row[1])
     bar.add_xaxis(x)
     bar.add_yaxis('销量', y)
