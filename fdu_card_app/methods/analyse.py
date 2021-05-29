@@ -93,3 +93,24 @@ def select_access_times(cursor, start, end):
                         toolbox_opts=opts.ToolboxOpts(is_show=True))
     bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
     bar.render(r"./graph.html")
+
+
+# 查询各菜肴销量
+def select_cuisineid_times(cursor, start, end):
+    sql = "select cuisineid, count(*) as sell from consume where consumetm::date between '{}' and '{}' group by cuisineid order by cuisineid".format(
+        start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    rows.sort()
+    bar = Bar()
+    x = []
+    y = []
+    for row in rows:
+        x.append(row[0])
+        y.append(row[1])
+    bar.add_xaxis(x)
+    bar.add_yaxis('销量', y)
+    bar.set_global_opts(title_opts=opts.TitleOpts(title='各菜肴销量'),
+                        toolbox_opts=opts.ToolboxOpts(is_show=True))
+    bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
+    bar.render(r"./graph.html")
