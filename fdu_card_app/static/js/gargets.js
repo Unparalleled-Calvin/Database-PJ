@@ -114,8 +114,8 @@ jQuery.fn.onPositionChanged = function (trigger, millis) {
 
     return o;
 };
-function fitWindow() {
-    var section_header_rec = $(".section-header")[0].getBoundingClientRect();
+function fitwindow(flag) {
+    var section_header_rec = flag ? $(".card-header")[0].getBoundingClientRect() :$(".section-header")[0].getBoundingClientRect();
     var sidebar_wrapper_rec = $("#sidebar-wrapper")[0].getBoundingClientRect();
     var body = $('body')
     if (section_header_rec.left <= sidebar_wrapper_rec.right) {

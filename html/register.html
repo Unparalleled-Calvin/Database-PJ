@@ -67,7 +67,7 @@
                         <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                                 <span id="canteen-span">用餐</span></a></li>
                         <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
-                                <span id="leave-span">离校</span></a></li>
+                                <span id="leave-span">出入</span></a></li>
                         <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
                                 <span id="access-span">回寝</span></a></li>
                         <li id="analysis-span" style="display: none;"><a class="nav-link" href="analysis"><i
@@ -283,8 +283,25 @@
         if (sel_val == 'student') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'inline'; work_input.style.display = 'none'; stuclass_input.style.display = 'inline'; dormitory_input.style.display = "inline" }
         if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none" }
     }
-    fitWindow()
-    $("#name-input").onPositionChanged(function(){fitWindow()});
+    fitwindow(1)
+    $("#name").onPositionChanged(function(){fitwindow(1)});
 </script>
-
+<script>
+    $('#sidebar-button').click(function () {
+      var body = $('body')
+      if (body.hasClass('sidebar-mini')) {
+        body.removeClass('sidebar-mini');
+        body.addClass('sidebar-show');
+      } else {
+        body.addClass('sidebar-mini');
+        body.removeClass('sidebar-show');
+      }
+      return false;
+    });
+    if (window.screen.width < 600) {
+      var target = document.getElementById("sidebar-button");
+      $('body').addClass('sidebar-mini');
+      target.style.display = "none";
+    }
+  </script>
 </html>
