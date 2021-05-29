@@ -130,26 +130,6 @@ def register(request):
         return render(request, "register.html", data)
 
 
-def reset(request):
-    if request.method == 'POST':
-        ret_dict = {}
-        if request.POST['passwd'] == '' or request.POST['repasswd'] == '' or request.POST['ID'] == '':
-            ret_dict['ret'] = 2
-            ret_dict['msg'] = '必填项均不能为空'
-        elif request.POST['passwd'] != request.POST['repasswd']:
-            ret_dict['ret'] = 2
-            ret_dict['msg'] = '两次密码填写不一致'
-        else:
-            ret_dict['ret'] = 1
-            ret_dict['msg'] = '即将跳转至用户界面'
-        ret = JsonResponse(ret_dict)
-        ret.set_cookie(
-            'ID', request.POST['ID'], expires=datetime.now() + timedelta(minutes=5))
-        return ret
-    else:
-        return render(request, "reset.html")
-
-
 def user(request):
 
     def toDataDict(dataTuple, forChange=None):  # 将元组数据转成字典数据，并将其中的时间类转成字符串
@@ -203,21 +183,12 @@ def user(request):
                         elif request.POST['role'] == 'others':
                             ret_dict['data'] = toDataDict(
                                 select.select_others(cursor))
-                        elif request.POST['role'] == 'profit':
-                            ret_dict['data'] = toDataDict(select.select_profit(
-                                cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'record_all':
                             ret_dict['data'] = toDataDict(select.select_record(
-                                cursor, request.POST['start'], request.POST['end']))
-                        elif request.POST['role'] == 'record_count':
-                            ret_dict['data'] = toDataDict(select.select_record_times(
                                 cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'access_all':
                             ret_dict['data'] = toDataDict(select.select_access(
                                 cursor, request.POST['start'], request.POST['end']), "accesstm")
-                        elif request.POST['role'] == 'access_count':
-                            ret_dict['data'] = toDataDict(select.select_access_times(
-                                cursor, request.POST['start'], request.POST['end']))
                         elif request.POST['role'] == 'consume_all':
                             ret_dict['data'] = toDataDict(select.select_consume(
                                 cursor, request.POST['start'], request.POST['end']))

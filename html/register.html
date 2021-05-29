@@ -190,7 +190,7 @@
                                                     <input type="checkbox" name="agree" class="custom-control-input"
                                                         id="agree" checked="checked" required="">
                                                     <label class="custom-control-label" for="agree">注册即代表同意 <a
-                                                            href="javascript:void(0);"
+                                                            href="javascript:service();"
                                                             id="TermsOfService">服务条款</a></label>
                                                     <div class="invalid-feedback">
                                                         请阅读服务条款并勾选
@@ -221,6 +221,9 @@
 <script>
     var name = {{ name | safe }};
     document.getElementById('name').innerHTML = ("Hi, " + name);
+    function service() {
+        swal("( • ̀ω•́ )✧", "你不会真的以为有服务条款吧~", "info")
+    }
     function register() {
         var csrfToken = $("[name='csrfmiddlewaretoken']").val();
         $.ajax({
@@ -253,11 +256,6 @@
             }
         });
     }
-    $("html").keydown(function (event) {
-        if (event.keyCode == 13) {
-            register();
-        }
-    });
     $("#register-confirm").click(function () {
         register();
     });
