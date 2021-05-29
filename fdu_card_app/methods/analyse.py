@@ -19,7 +19,7 @@ def select_profit(cursor, start, end):
     x = []
     y = []
     for row in rows:
-        x.append(row[1])
+        x.append((row[0], row[1]))
         y.append(row[2])
     bar.add_xaxis(x)
     bar.add_yaxis('营业额', y)
@@ -53,8 +53,8 @@ def select_record_times(cursor, start, end):
     yin = []
     yout = []
     for row in rows:
-        if row[1] not in x:
-            x.append(row[1])
+        if (row[0], row[1]) not in x:
+            x.append((row[0], row[1]))
         if(row[2] == 'in'):
             yin.append(row[3])
         else:
@@ -65,7 +65,7 @@ def select_record_times(cursor, start, end):
     bar.set_global_opts(title_opts=opts.TitleOpts(title='各校门进出情况'),
                         toolbox_opts=opts.ToolboxOpts(is_show=True))
     bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
-    bar.render(r".\graph.html")
+    bar.render(r"./graph.html")
 
 
 # 查询各寝室门禁次数
