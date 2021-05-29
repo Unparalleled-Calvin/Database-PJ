@@ -163,7 +163,7 @@
                         <option value="passwd" selected="">密码重置</option>
                         <option value="valid2">移除权限</option>
                         <option value="valid1">授予权限</option>
-                        <option value="cdno">学生寝室分配</option>
+                        <option value="cdno">寝室分配</option>
                         <option value="class">学生班级更新</option>
                         <option value="rank">教师职称更新</option>
                         <option value="work">外来人员工作更新</option>
@@ -342,4 +342,6 @@
       rank_input.style.display = "none"
     }
   }
+  fitWindow()
+  $("#table-div").onPositionChanged(function(){fitWindow()});
 </script>

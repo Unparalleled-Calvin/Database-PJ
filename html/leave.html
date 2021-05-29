@@ -111,19 +111,6 @@
             <h1>校门</h1>
           </div>
           <div class="row" id="window_row">
-            <!-- <div class="col-12 col-md-4 col-lg-4">
-              <div class="card">
-                <i class="fa fa-window-close fa-lg" align="right" style="cursor:pointer;Margin:7px;"></i>
-                <div class="buttons">
-                  <form action="javascript:void(0);" method="POST">
-                    <div class="center">
-                      <input type="submit" id="order_button1"
-                        class="btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round" value="点餐" />
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div> -->
           </div>
         </section>
       </div>
@@ -421,4 +408,6 @@
       }
     })
   });
+  fitWindow()
+  $("#window_row").onPositionChanged(function(){fitWindow()});
 </script>

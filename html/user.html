@@ -348,4 +348,6 @@
 <script>
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
+  fitWindow()
+  $("#remainingsum").onPositionChanged(function(){fitWindow()});
 </script>
