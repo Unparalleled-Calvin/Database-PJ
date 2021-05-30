@@ -104,7 +104,7 @@ def select_cuisineid_times(cursor, start, end):
     cid = []
     for row in rows:
         cid.append(row[0])
-    for i in range(1, 8):
+    for i in range(1, 9):
         if(i not in cid):
             rows.append((i, 0))
     rows.sort()
@@ -113,11 +113,58 @@ def select_cuisineid_times(cursor, start, end):
     y = []
     ref = ['盱眙龙虾', '香酥烤肉', '麻婆豆腐', '巴蜀烫捞', '香煎豆干', '草莓慕斯', '柠檬冰饮', '松鼠桂鱼']
     for row in rows:
-        x.append(ref[row[0]-1])
+        x.append((row[0], ref[row[0]-1]))
         y.append(row[1])
     bar.add_xaxis(x)
     bar.add_yaxis('销量', y)
     bar.set_global_opts(title_opts=opts.TitleOpts(title='各菜肴销量'),
+                        toolbox_opts=opts.ToolboxOpts(is_show=True))
+    bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
+    bar.render(r"./graph.html")
+
+
+# 查询各职称教师人数
+def select_rank_teacher(cursor, start, end):
+    sql = "select rank, count(*) as number from teacher where birthday between '{}' and '{}' group by rank".format(start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    ref = ['助教', '讲师', '副教授', '教授']
+    rank = []
+    for row in rows:
+        rank.append(row[0])
+    for i in ref:
+        if(i not in rank):
+            rows.append((i, 0))
+    rows.sort()
+    bar = Bar()
+    x = []
+    y = []
+    for row in rows:
+        x.append((row[0]))
+        y.append(row[1])
+    bar.add_xaxis(x)
+    bar.add_yaxis('人数', y)
+    bar.set_global_opts(title_opts=opts.TitleOpts(title='各职称教师人数'),
+                        toolbox_opts=opts.ToolboxOpts(is_show=True))
+    bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
+    bar.render(r"./graph.html")
+
+
+# 查询各班级学生人数
+def select_class_student(cursor, start, end):
+    sql = "select class, count(*) as number from student where enrolmentdt between '{}' and '{}' group by class".format(start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    rows.sort()
+    bar = Bar()
+    x = []
+    y = []
+    for row in rows:
+        x.append((row[0]))
+        y.append(row[1])
+    bar.add_xaxis(x)
+    bar.add_yaxis('人数', y)
+    bar.set_global_opts(title_opts=opts.TitleOpts(title='各班级学生人数'),
                         toolbox_opts=opts.ToolboxOpts(is_show=True))
     bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
     bar.render(r"./graph.html")
