@@ -87,7 +87,7 @@
                         <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                                 <span id="canteen-span">用餐</span></a></li>
                         <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
-                                <span id="leave-span">离校</span></a></li>
+                                <span id="leave-span">出入</span></a></li>
                         <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
                                 <span id="access-span">回寝</span></a></li>
                         <li class="active" id="analysis-span" style="display: none;"><a class="nav-link"
@@ -123,6 +123,7 @@
                                                 <option value="record_count" selected="">各校门出入校记录</option>
                                                 <option value="access_count">各寝室门禁记录</option>
                                                 <option value="profit">各餐厅营业额</option>
+                                                <option value="cuisine">菜肴偏好</option>
                                             </select>
                                             <div id="start-end" style="display: block;">
                                                 <div>
@@ -212,6 +213,6 @@
             }
         });
     });
-    fitWindow()
-    $("#table-div").onPositionChanged(function(){fitWindow()});
+    fitwindow(0)
+    $("#table-div").onPositionChanged(function(){fitwindow(0)});
 </script>

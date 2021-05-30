@@ -340,6 +340,8 @@ def analysis(request):
             analyse.select_access_times(cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'profit':
             analyse.select_profit(cursor, request.POST['start'], request.POST['end'])
+        elif request.POST['role'] == 'cuisine':
+            analyse.select_cuisineid_times(cursor, request.POST['start'], request.POST['end'])
         mode = re.compile(".*?(<div.+?></div>).*?<script>(.*?)</script>", re.DOTALL)
         try:
             with open(r"./graph.html", "r") as f:

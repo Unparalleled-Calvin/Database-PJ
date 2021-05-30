@@ -87,7 +87,7 @@
             <li><a class="nav-link" href="canteen"><i class=" fas fa-cookie-bite"></i>
                 <span id="canteen-span">用餐</span></a></li>
             <li><a class="nav-link" href="leave"><i class="fas fa-torii-gate"></i>
-                <span id="leave-span">离校</span></a></li>
+                <span id="leave-span">出入</span></a></li>
             <li><a class="nav-link" href="access"><i class="fas fa-building"></i>
                 <span id="access-span">回寝</span></a></li>
             <li id="analysis-span" style="display: none;"><a class="nav-link" href="analysis"><i
@@ -144,7 +144,6 @@
               <div>&nbsp;</div>
               <h3>信息查询</h3>
               <div class="card-wrap">
-                <div id="table-div"></div>
                 <div>&nbsp;</div>
                 <div class="buttons">
                   <form action="javascript:void(0);" method="POST">
@@ -174,6 +173,8 @@
                     </div>
                   </form>
                 </div>
+                <div id="table-div"></div>
+                <div>&nbsp;</div>
               </div>
             </div>
           </div>
@@ -348,6 +349,6 @@
 <script>
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
-  fitWindow()
-  $("#remainingsum").onPositionChanged(function(){fitWindow()});
+  fitwindow(0)
+  $("#remainingsum").onPositionChanged(function(){fitwindow(0)});
 </script>
