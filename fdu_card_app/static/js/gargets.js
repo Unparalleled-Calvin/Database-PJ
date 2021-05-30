@@ -115,11 +115,29 @@ jQuery.fn.onPositionChanged = function (trigger, millis) {
     return o;
 };
 function fitwindow(flag) {
-    var section_header_rec = flag ? $(".card-header")[0].getBoundingClientRect() :$(".section-header")[0].getBoundingClientRect();
+    var section_header_rec = flag ? $(".card-header")[0].getBoundingClientRect() : $(".section-header")[0].getBoundingClientRect();
     var sidebar_wrapper_rec = $("#sidebar-wrapper")[0].getBoundingClientRect();
     var body = $('body')
     if (section_header_rec.left <= sidebar_wrapper_rec.right) {
         body.removeClass('sidebar-show');
         body.addClass('sidebar-mini');
+    }
+}
+
+function NumDynamic(ID, speed, value) {
+    var span1 = document.getElementById(ID);
+    if (value > 0) {
+        var num = 0;
+        var step = Number((value / 100).toFixed(2));
+        var t = setInterval(function () {
+            num += step;
+            span1.innerText = num.toFixed(2);
+            if (num + step >= value) {
+                clearInterval(t);
+                span1.innerText = value.toFixed(2);
+            }
+        }, speed);
+    } else {
+        span1.innerText = value;
     }
 }

@@ -36,15 +36,6 @@
   <script src="{% static '/js/jquery.waypoints.min.js' %}"></script>
   <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
   <script src="{% static '/js/gargets.js' %}"></script>
-  <script>
-    $('.counter').counterUp({
-      delay: 10,
-      time: 1000
-    });
-
-
-    setTimeout(loadTrafficChart(), 3000);
-  </script>
 
 <body>
   <div id="app">
@@ -116,7 +107,7 @@
                   <h4>卡内余额</h4>
                 </div>
                 <div class="card-body">
-                  <span class="counter" id="remainingsum">{{ remainingsum | safe }}</span>元
+                  <span class="counter" id="remainingsum">0</span>元
                 </div>
                 <div class="card-stats">
                   <div class="card-stats-title" style="padding-top: 0;padding-bottom: 4px;">
@@ -350,5 +341,6 @@
   var name = {{ name | safe }};
   document.getElementById('name').innerHTML = ("Hi, " + name)
   fitwindow(0)
-  $("#remainingsum").onPositionChanged(function(){fitwindow(0)});
+  $("#remainingsum").onPositionChanged(function () { fitwindow(0) });
+  NumDynamic("remainingsum", 10, {{ remainingsum | safe }});
 </script>

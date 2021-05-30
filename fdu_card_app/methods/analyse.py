@@ -128,7 +128,7 @@ def select_rank_teacher(cursor, start, end):
     sql = "select rank, count(*) as number from teacher where birthday between '{}' and '{}' group by rank".format(start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    ref = ['助教', '讲师', '副教授', '教授']
+    ref = ['assistant', 'lecturer', 'associate professor', 'professor']
     rank = []
     for row in rows:
         rank.append(row[0])
