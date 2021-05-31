@@ -14,6 +14,9 @@ from methods import update
 from methods import delete
 cursor = connection.cursor()
 
+login_info = dict()
+kick_out = set()
+
 # automatic backup
 import os
 from datetime import datetime
@@ -27,9 +30,22 @@ scheduler.add_job(backup, 'cron', hour='0', minute='0', args=[])
 scheduler.start()
 
 # Create your views here.
+def getIP(request):
+    if request.META.get('HTTP_X_FORWARDED_FOR'):
+        return request.META.get("HTTP_X_FORWARDED_FOR")
+    else:
+        return request.META.get("REMOTE_ADDR")
 
+def kickout(request, ip):
+    response = render(request, "login.html", {'kickout':1})
+    response.delete_cookie('ID')
+    kick_out.discard(ip)
+    return response
 
 def login(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
     if request.method == 'POST':
         ret_dict = {}
         if(select.check_identity(cursor, request.POST['ID'], request.POST['passwd'])):
@@ -37,6 +53,9 @@ def login(request):
             ret = JsonResponse(ret_dict)
             ret.set_cookie(
                 'ID', request.POST['ID'], expires=datetime.now() + timedelta(minutes=5))
+            if request.POST['ID'] in login_info and login_info[request.POST['ID']] != ip:
+                kick_out.add(login_info[request.POST['ID']])
+            login_info[request.POST['ID']] = ip
         else:
             ret_dict['ret'] = 2
             ret = JsonResponse(ret_dict)
@@ -45,17 +64,21 @@ def login(request):
         if 'ID' in request.COOKIES:
             return HttpResponseRedirect('/user')
         else:
-            return render(request, "login.html")
+            return render(request, "login.html", {'kickout':0})
 
 
 def logout(request):
     response = HttpResponseRedirect('/login')
     if 'ID' in request.COOKIES:
         response.delete_cookie('ID')
+        login_info.pop(request.COOKIES['ID'])
     return response
 
 
 def register(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
     ret_dict = {}
 
     def ID_invalid(post):
@@ -131,6 +154,9 @@ def register(request):
 
 
 def user(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
 
     def toDataDict(dataTuple, forChange=None):  # 将元组数据转成字典数据，并将其中的时间类转成字符串
         data_dict = {}
@@ -234,6 +260,9 @@ def user(request):
 
 
 def canteen(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
@@ -265,6 +294,9 @@ def canteen(request):
 
 
 def leave(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
@@ -296,6 +328,9 @@ def leave(request):
 
 
 def access(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
@@ -330,6 +365,9 @@ def access(request):
         })
 
 def analysis(request):
+    ip = getIP(request)
+    if ip in kick_out:
+        return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':

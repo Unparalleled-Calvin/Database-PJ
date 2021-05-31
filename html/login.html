@@ -139,4 +139,8 @@
 	$("#login-button").click(function () {
 		login();
 	});
+	var kickout = {{kickout | safe}};
+	if(kickout){
+		swal("抱歉", "您已被踢出，请重新登录", "error");
+	}
 </script>
