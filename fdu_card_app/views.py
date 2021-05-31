@@ -346,6 +346,8 @@ def analysis(request):
             analyse.select_rank_teacher(cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'class':
             analyse.select_class_student(cursor, request.POST['start'], request.POST['end'])
+        elif request.POST['role'] == 'dormitory':
+            analyse.select_dno_people(cursor, request.POST['start'], request.POST['end'])
         mode = re.compile(".*?(<div.+?></div>).*?<script>(.*?)</script>", re.DOTALL)
         try:
             with open(r"./graph.html", "r") as f:
