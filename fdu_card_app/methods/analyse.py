@@ -168,3 +168,29 @@ def select_class_student(cursor, start, end):
                         toolbox_opts=opts.ToolboxOpts(is_show=True))
     bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
     bar.render(r"./graph.html")
+
+
+# 查询各寝室楼所住人数
+def select_dno_people(cursor, start, end):
+    sql = "select cdno, count(*) as number from card where valid <> 0 and carddate between '{}' and '{}' group by cdno".format(start, end)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    sql1 = "select dno from domitory except (select cdno from card where valid <> 0 and carddate between '{}' and '{}'".format(
+        start, end)
+    cursor.execute(sql1)
+    rows1 = cursor.fetchall()
+    for row in rows1:
+        rows.append((row[0], 0))
+    rows.sort()
+    bar = Bar()
+    x = []
+    y = []
+    for row in rows:
+        x.append((row[0]))
+        y.append(row[1])
+    bar.add_xaxis(x)
+    bar.add_yaxis('人数', y)
+    bar.set_global_opts(title_opts=opts.TitleOpts(title='各楼寝居住人数'),
+                        toolbox_opts=opts.ToolboxOpts(is_show=True))
+    bar.set_series_opts(label_opts=opts.LabelOpts(position="top"))
+    bar.render(r"./graph.html")
