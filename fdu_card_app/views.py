@@ -37,18 +37,17 @@ def getIP(request):
         return request.META.get("REMOTE_ADDR")
 
 def kickout(request, ip, method = "GET"):
-    print(method)
     if method == "GET":
         response = render(request, "login.html", {'kickout':1})
     else:
         response = JsonResponse({"kickout" : 1})
     response.delete_cookie('ID')
-    kick_out.discard(ip)
+    kick_out.discard((request.COOKIES['ID'], ip))
     return response
 
 def login(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if 'ID' in request.COOKIES and (request.COOKIES['ID'], ip) in kick_out:
         return kickout(request, ip)
     if request.method == 'POST':
         ret_dict = {}
@@ -58,7 +57,7 @@ def login(request):
             ret.set_cookie(
                 'ID', request.POST['ID'], expires=datetime.now() + timedelta(minutes=5))
             if request.POST['ID'] in login_info and login_info[request.POST['ID']] != ip:
-                kick_out.add(login_info[request.POST['ID']])
+                kick_out.add((request.POST['ID'], login_info[request.POST['ID']]))
             login_info[request.POST['ID']] = ip
         else:
             ret_dict['ret'] = 2
@@ -80,8 +79,10 @@ def logout(request):
 
 
 def register(request):
+    if 'ID' not in request.COOKIES or request.COOKIES['ID'] != 'admin':
+        return HttpResponseRedirect('/login')
     ip = getIP(request)
-    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
+    if (request.COOKIES['ID'], ip) in kick_out or request.COOKIES['ID'] not in login_info:
         return kickout(request, ip, request.method)
     ret_dict = {}
 
@@ -95,8 +96,6 @@ def register(request):
         else:
             return False
         return True
-    if request.COOKIES['ID'] != 'admin':
-        return HttpResponseRedirect('/login')
     if request.method == 'POST':
         if request.POST['name'] == '' or request.POST['ID'] == '':
             ret_dict['ret'] = 2
@@ -158,9 +157,10 @@ def register(request):
 
 
 def user(request):
+    if 'ID' not in request.COOKIES:
+        return HttpResponseRedirect('/login')
     ip = getIP(request)
-    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        print("kickout")
+    if (request.COOKIES['ID'], ip) in kick_out or request.COOKIES['ID'] not in login_info:
         return kickout(request, ip, request.method)
 
     def toDataDict(dataTuple, forChange=None):  # 将元组数据转成字典数据，并将其中的时间类转成字符串
@@ -173,104 +173,101 @@ def user(request):
                 i[forChange] = str(i[forChange])
         return data_dict
 
-    if 'ID' not in request.COOKIES:
-        return HttpResponseRedirect('/login')
-    else:
-        if request.method == 'POST':
-            ret_dict = {}
-            if request.COOKIES['ID'] != 'admin':
-                try:
-                    if request.POST['role'] == 'charge':
-                        ret_dict["remainingsum"] = str(update.update_remainingsum(
-                            cursor, request.COOKIES['ID'], request.POST['amount']))
-                    elif request.POST['role'] == 'passwd':
-                        ret_dict['data'] = int(update.update_passwd(
-                            cursor, request.COOKIES['ID'], request.POST['new_passwd']))
-                    elif request.POST['role'] == 'update':
-                        ret_dict['data'] = int(update.update_card(
-                            cursor, request.COOKIES['ID'], request.POST['new_passwd']))
-                    elif request.POST['method'] == "select":
-                        if request.POST['role'] == 'record':
-                            ret_dict['data'] = toDataDict(select.select_v_record(
-                                cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'recordtm')
-                        elif request.POST['role'] == 'access':
-                            ret_dict['data'] = toDataDict(select.select_v_access(
-                                cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'accesstm')
-                        elif request.POST['role'] == 'consume':
-                            ret_dict['data'] = toDataDict(select.select_v_consume(
-                                cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'consumetm')
-                    ret_dict['ret'] = 1
-                except Exception:
-                    ret_dict['ret'] = 0
-            else:
-                try:
-                    if request.POST['method'] == 'select':
-                        if request.POST['role'] == 'student':
-                            ret_dict['data'] = toDataDict(
-                                select.select_student(cursor), "enrolmentdt")
-                        elif request.POST['role'] == 'teacher':
-                            ret_dict['data'] = toDataDict(
-                                select.select_teacher(cursor), "birthday")
-                        elif request.POST['role'] == 'others':
-                            ret_dict['data'] = toDataDict(
-                                select.select_others(cursor))
-                        elif request.POST['role'] == 'record_all':
-                            ret_dict['data'] = toDataDict(select.select_record(
-                                cursor, request.POST['start'], request.POST['end']))
-                        elif request.POST['role'] == 'access_all':
-                            ret_dict['data'] = toDataDict(select.select_access(
-                                cursor, request.POST['start'], request.POST['end']), "accesstm")
-                        elif request.POST['role'] == 'consume_all':
-                            ret_dict['data'] = toDataDict(select.select_consume(
-                                cursor, request.POST['start'], request.POST['end']))
-                    if request.POST['method'] == "update":
-                        if request.POST['role'] == "passwd":
-                            ret_dict['data'] = int(
-                                update.default_passwd(cursor, request.POST['ID']))
-                        elif request.POST['role'] == "valid1":
-                            ret_dict['data'] = int(
-                                update.update_valid1(cursor, request.POST['ID']))
-                        elif request.POST['role'] == "valid2":
-                            ret_dict['data'] = int(
-                                update.update_valid2(cursor, request.POST['ID']))
-                        elif request.POST['role'] == "cdno":
-                            ret_dict['data'] = int(update.update_cdno(
-                                cursor, request.POST['ID'], request.POST['info']))
-                        elif request.POST['role'] == "class":
-                            ret_dict['data'] = int(update.update_class(
-                                cursor, request.POST['ID'], request.POST['info']))
-                        elif request.POST['role'] == "rank":
-                            ret_dict['data'] = int(update.update_rank(
-                                cursor, request.POST['ID'], request.POST['rank']))
-                        elif request.POST['role'] == "work":
-                            ret_dict['data'] = int(update.update_work(
-                                cursor, request.POST['ID'], request.POST['info']))
-                        elif request.POST['role'] == "delete_person":
-                            ret_dict['data'] = int(
-                                delete.delete_person(cursor, request.POST['ID']))
-                    ret_dict['ret'] = 1
-                except Exception:
-                    ret_dict['ret'] = 0
-            return JsonResponse(ret_dict)
+    if request.method == 'POST':
+        ret_dict = {}
+        if request.COOKIES['ID'] != 'admin':
+            try:
+                if request.POST['role'] == 'charge':
+                    ret_dict["remainingsum"] = str(update.update_remainingsum(
+                        cursor, request.COOKIES['ID'], request.POST['amount']))
+                elif request.POST['role'] == 'passwd':
+                    ret_dict['data'] = int(update.update_passwd(
+                        cursor, request.COOKIES['ID'], request.POST['new_passwd']))
+                elif request.POST['role'] == 'update':
+                    ret_dict['data'] = int(update.update_card(
+                        cursor, request.COOKIES['ID'], request.POST['new_passwd']))
+                elif request.POST['method'] == "select":
+                    if request.POST['role'] == 'record':
+                        ret_dict['data'] = toDataDict(select.select_v_record(
+                            cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'recordtm')
+                    elif request.POST['role'] == 'access':
+                        ret_dict['data'] = toDataDict(select.select_v_access(
+                            cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'accesstm')
+                    elif request.POST['role'] == 'consume':
+                        ret_dict['data'] = toDataDict(select.select_v_consume(
+                            cursor, request.COOKIES['ID'], request.POST['start'], request.POST['end']), 'consumetm')
+                ret_dict['ret'] = 1
+            except Exception:
+                ret_dict['ret'] = 0
         else:
-            data = select.select_information(
-                cursor, request.COOKIES['ID'])[2][0][0]
-            data['name'] = "\"" + \
-                select.select_v_name(cursor, request.COOKIES['ID']) + "\""
-            data['data'] = toDataDict(
-                select.select_student(cursor), "enrolmentdt")
-            data['today_consume'] = select.select_amount(
-                cursor, request.COOKIES['ID'])
-            return render(request, "user.html" if request.COOKIES['ID'] != 'admin' else 'admin.html', data)
+            try:
+                if request.POST['method'] == 'select':
+                    if request.POST['role'] == 'student':
+                        ret_dict['data'] = toDataDict(
+                            select.select_student(cursor), "enrolmentdt")
+                    elif request.POST['role'] == 'teacher':
+                        ret_dict['data'] = toDataDict(
+                            select.select_teacher(cursor), "birthday")
+                    elif request.POST['role'] == 'others':
+                        ret_dict['data'] = toDataDict(
+                            select.select_others(cursor))
+                    elif request.POST['role'] == 'record_all':
+                        ret_dict['data'] = toDataDict(select.select_record(
+                            cursor, request.POST['start'], request.POST['end']))
+                    elif request.POST['role'] == 'access_all':
+                        ret_dict['data'] = toDataDict(select.select_access(
+                            cursor, request.POST['start'], request.POST['end']), "accesstm")
+                    elif request.POST['role'] == 'consume_all':
+                        ret_dict['data'] = toDataDict(select.select_consume(
+                            cursor, request.POST['start'], request.POST['end']))
+                if request.POST['method'] == "update":
+                    if request.POST['role'] == "passwd":
+                        ret_dict['data'] = int(
+                            update.default_passwd(cursor, request.POST['ID']))
+                    elif request.POST['role'] == "valid1":
+                        ret_dict['data'] = int(
+                            update.update_valid1(cursor, request.POST['ID']))
+                    elif request.POST['role'] == "valid2":
+                        ret_dict['data'] = int(
+                            update.update_valid2(cursor, request.POST['ID']))
+                    elif request.POST['role'] == "cdno":
+                        ret_dict['data'] = int(update.update_cdno(
+                            cursor, request.POST['ID'], request.POST['info']))
+                    elif request.POST['role'] == "class":
+                        ret_dict['data'] = int(update.update_class(
+                            cursor, request.POST['ID'], request.POST['info']))
+                    elif request.POST['role'] == "rank":
+                        ret_dict['data'] = int(update.update_rank(
+                            cursor, request.POST['ID'], request.POST['rank']))
+                    elif request.POST['role'] == "work":
+                        ret_dict['data'] = int(update.update_work(
+                            cursor, request.POST['ID'], request.POST['info']))
+                    elif request.POST['role'] == "delete_person":
+                        ret_dict['data'] = int(
+                            delete.delete_person(cursor, request.POST['ID']))
+                ret_dict['ret'] = 1
+            except Exception:
+                ret_dict['ret'] = 0
+        return JsonResponse(ret_dict)
+    else:
+        data = select.select_information(
+            cursor, request.COOKIES['ID'])[2][0][0]
+        data['name'] = "\"" + \
+            select.select_v_name(cursor, request.COOKIES['ID']) + "\""
+        data['data'] = toDataDict(
+            select.select_student(cursor), "enrolmentdt")
+        data['today_consume'] = select.select_amount(
+            cursor, request.COOKIES['ID'])
+        return render(request, "user.html" if request.COOKIES['ID'] != 'admin' else 'admin.html', data)
 
 
 def canteen(request):
-    ip = getIP(request)
-    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
-    elif request.method == 'POST':
+    ip = getIP(request)
+    if (request.COOKIES['ID'], ip) in kick_out or request.COOKIES['ID'] not in login_info:
+        return kickout(request, ip, request.method)
+    if request.method == 'POST':
         ret_dict = {}
         if request.COOKIES['ID'] != 'admin':
             ret_dict['ret'] = int(insert.insert_consume(
@@ -299,12 +296,12 @@ def canteen(request):
 
 
 def leave(request):
-    ip = getIP(request)
-    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
-    elif request.method == 'POST':
+    ip = getIP(request)
+    if (request.COOKIES['ID'], ip) in kick_out or request.COOKIES['ID'] not in login_info:
+        return kickout(request, ip, request.method)
+    if request.method == 'POST':
         ret_dict = {}
         if request.COOKIES['ID'] != 'admin':
             ret_dict['ret'] = int(insert.insert_record(
@@ -333,12 +330,12 @@ def leave(request):
 
 
 def access(request):
-    ip = getIP(request)
-    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
-    elif request.method == 'POST':
+    ip = getIP(request)
+    if (request.COOKIES['ID'], ip) in kick_out or request.COOKIES['ID'] not in login_info:
+        return kickout(request, ip, request.method)
+    if request.method == 'POST':
         ret_dict = {}
         if request.COOKIES['ID'] != 'admin':
             ret_dict['ret'] = int(insert.insert_access(
@@ -370,12 +367,12 @@ def access(request):
         })
 
 def analysis(request):
-    ip = getIP(request)
-    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip, request.method)
-    if 'ID' not in request.COOKIES:
+    if 'ID' not in request.COOKIES or request.COOKIES['ID'] != 'admin':
         return HttpResponseRedirect('/login')
-    elif request.method == 'POST':
+    ip = getIP(request)
+    if (request.COOKIES['ID'], ip) in kick_out or request.COOKIES['ID'] not in login_info:
+        return kickout(request, ip, request.method)
+    if request.method == 'POST':
         ret_dict = {}
         if request.POST['role'] == 'record_count':
             analyse.select_record_times(cursor, request.POST['start'], request.POST['end'])
