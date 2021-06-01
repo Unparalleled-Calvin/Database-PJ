@@ -172,10 +172,10 @@ def select_class_student(cursor, start, end):
 
 # 查询各寝室楼所住人数
 def select_dno_people(cursor, start, end):
-    sql = "select cdno, count(*) as number from card where cdno is not null and valid <> 0 and carddate between '{}' and '{}' group by cdno".format(start, end)
+    sql = "select cdno, count(*) as number from card where cdno is not null and valid <> 0 and carddate::date between '{}' and '{}' group by cdno".format(start, end)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    sql1 = "select dno from domitory except (select cdno from card where valid <> 0 and carddate between '{}' and '{}')".format(
+    sql1 = "select dno from domitory except (select cdno from card where valid <> 0 and carddate::date between '{}' and '{}')".format(
         start, end)
     cursor.execute(sql1)
     rows1 = cursor.fetchall()
