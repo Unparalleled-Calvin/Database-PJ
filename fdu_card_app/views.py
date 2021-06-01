@@ -111,7 +111,7 @@ def register(request):
         elif request.POST['identity'] == 'student' and request.POST['dormitory'] == '':
             ret_dict['ret'] = 2
             ret_dict['msg'] = '寝室楼不能为空'
-        elif request.POST['identity'] == 'student' and (not request.POST['dormitory'].isidgit() or select.verify_dormitory(cursor, request.POST['dormitory'])) == 0:
+        elif request.POST['identity'] == 'student' and (not request.POST['dormitory'].isdigit() or select.verify_dormitory(cursor, request.POST['dormitory']) == 0):
             ret_dict['ret'] = 2
             ret_dict['msg'] = '寝室楼不存在'
         elif request.POST['identity'] == 'teacher' and request.POST['birth'] == '':
