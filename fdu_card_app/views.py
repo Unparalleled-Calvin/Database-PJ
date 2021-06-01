@@ -36,8 +36,12 @@ def getIP(request):
     else:
         return request.META.get("REMOTE_ADDR")
 
-def kickout(request, ip):
-    response = render(request, "login.html", {'kickout':1})
+def kickout(request, ip, method = "GET"):
+    print(method)
+    if method == "GET":
+        response = render(request, "login.html", {'kickout':1})
+    else:
+        response = JsonResponse({"kickout" : 1})
     response.delete_cookie('ID')
     kick_out.discard(ip)
     return response
@@ -78,7 +82,7 @@ def logout(request):
 def register(request):
     ip = getIP(request)
     if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip)
+        return kickout(request, ip, request.method)
     ret_dict = {}
 
     def ID_invalid(post):
@@ -156,7 +160,8 @@ def register(request):
 def user(request):
     ip = getIP(request)
     if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip)
+        print("kickout")
+        return kickout(request, ip, request.method)
 
     def toDataDict(dataTuple, forChange=None):  # 将元组数据转成字典数据，并将其中的时间类转成字符串
         data_dict = {}
@@ -262,7 +267,7 @@ def user(request):
 def canteen(request):
     ip = getIP(request)
     if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip)
+        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
@@ -296,7 +301,7 @@ def canteen(request):
 def leave(request):
     ip = getIP(request)
     if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip)
+        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
@@ -330,7 +335,7 @@ def leave(request):
 def access(request):
     ip = getIP(request)
     if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip)
+        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':
@@ -367,7 +372,7 @@ def access(request):
 def analysis(request):
     ip = getIP(request)
     if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
-        return kickout(request, ip)
+        return kickout(request, ip, request.method)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
     elif request.method == 'POST':

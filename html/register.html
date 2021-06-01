@@ -24,7 +24,7 @@
     <script src="{% static '/js/sweetalert2.all.min.js' %}"></script>
     <script src="{% static '/js/jquery.pwstrength.min.js' %}"></script>
     <script src="{% static '/js/gadgets.js' %}"></script>
-    
+
 </head>
 
 <body>
@@ -244,7 +244,18 @@
                 csrfmiddlewaretoken: csrfToken,
             },
             success: function (data) {
-                if (data.ret == 1) {
+                if (data.kickout) {
+                    Swal.fire({
+                        title: '抱歉',
+                        type: 'error',
+                        text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+                        confirmButtonText: "确定",
+                        showCancelButton: false,
+                    }).then(function (result) {
+                        window.location.href = "login"
+                    });
+                }
+                else if (data.ret == 1) {
                     swal({
                         type: 'success',
                         title: '注册成功',
@@ -285,24 +296,25 @@
         if (sel_val == 'others') { birth_input.style.display = 'none'; rank_input.style.display = 'none'; enrolmentdt_input.style.display = 'none'; work_input.style.display = 'inline'; stuclass_input.style.display = 'none'; dormitory_input.style.display = "none" }
     }
     fitwindow(1)
-    $("#name").onPositionChanged(function(){fitwindow(1)});
+    $("#name").onPositionChanged(function () { fitwindow(1) });
 </script>
 <script>
     $('#sidebar-button').click(function () {
-      var body = $('body')
-      if (body.hasClass('sidebar-mini')) {
-        body.removeClass('sidebar-mini');
-        body.addClass('sidebar-show');
-      } else {
-        body.addClass('sidebar-mini');
-        body.removeClass('sidebar-show');
-      }
-      return false;
+        var body = $('body')
+        if (body.hasClass('sidebar-mini')) {
+            body.removeClass('sidebar-mini');
+            body.addClass('sidebar-show');
+        } else {
+            body.addClass('sidebar-mini');
+            body.removeClass('sidebar-show');
+        }
+        return false;
     });
     if (window.screen.width < 600) {
-      var target = document.getElementById("sidebar-button");
-      $('body').addClass('sidebar-mini');
-      target.style.display = "none";
+        var target = document.getElementById("sidebar-button");
+        $('body').addClass('sidebar-mini');
+        target.style.display = "none";
     }
-  </script>
+</script>
+
 </html>

@@ -245,7 +245,18 @@
         csrfmiddlewaretoken: csrfToken,
       },
       success: function (data) {
-        if (data['ret'] != 0) {
+        if (data.kickout) {
+          Swal.fire({
+            title: '抱歉',
+            type: 'error',
+            text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+            confirmButtonText: "确定",
+            showCancelButton: false,
+          }).then(function (result) {
+            window.location.href = "login"
+          });
+        }
+        else if (data['ret'] != 0) {
           swal("查询成功", "", "success");
           showTable("table-div", data['data'])
         }
@@ -271,7 +282,18 @@
         csrfmiddlewaretoken: csrfToken,
       },
       success: function (data) {
-        if (data['data'] == 0) {
+        if (data.kickout) {
+          Swal.fire({
+            title: '抱歉',
+            type: 'error',
+            text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+            confirmButtonText: "确定",
+            showCancelButton: false,
+          }).then(function (result) {
+            window.location.href = "login"
+          });
+        }
+        else if (data['data'] == 0) {
           swal("更新失败", $("#ID_update").val() == "" ? "学工号不能为空" : "该学工号不存在", "error");
         }
         else if (data['ret'] != 0) {
@@ -335,5 +357,5 @@
     }
   }
   fitwindow(0)
-  $("#table-div").onPositionChanged(function(){fitwindow(0)});
+  $("#table-div").onPositionChanged(function () { fitwindow(0) });
 </script>

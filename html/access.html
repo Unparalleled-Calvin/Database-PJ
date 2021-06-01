@@ -219,7 +219,18 @@
         csrfmiddlewaretoken: csrfToken,
       },
       success: function (data) {
-        if (data.ret != 0) {
+        if (data.kickout) {
+          Swal.fire({
+            title: '抱歉',
+            type: 'error',
+            text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+            confirmButtonText: "确定",
+            showCancelButton: false,
+          }).then(function (result) {
+            window.location.href = "login"
+          });
+        }
+        else if (data.ret != 0) {
           swal('验证成功', "欢迎回到寝室楼！", 'success');
         }
         else {
@@ -278,7 +289,18 @@
               csrfmiddlewaretoken: csrfToken,
             },
             success: function (data) {
-              if (data['ret'] != 0) {
+              if (data.kickout) {
+                Swal.fire({
+                  title: '抱歉',
+                  type: 'error',
+                  text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+                  confirmButtonText: "确定",
+                  showCancelButton: false,
+                }).then(function (result) {
+                  window.location.href = "login"
+                });
+              }
+              else if (data['ret'] != 0) {
                 swal("修改成功", "", "success");
                 dormitory[dno]['dadmin'] = new_dadmin;
                 dormitory[dno]['dtel'] = new_dtel;
@@ -312,7 +334,18 @@
             csrfmiddlewaretoken: csrfToken,
           },
           success: function (data) {
-            if (data['ret'] != 0) {
+            if (data.kickout) {
+              Swal.fire({
+                title: '抱歉',
+                type: 'error',
+                text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+                confirmButtonText: "确定",
+                showCancelButton: false,
+              }).then(function (result) {
+                window.location.href = "login"
+              });
+            }
+            else if (data['ret'] != 0) {
               swal("删除成功", "", "success");
               temp.parentNode.parentNode.style.display = 'none';
             }
@@ -351,7 +384,18 @@
             csrfmiddlewaretoken: csrfToken,
           },
           success: function (data) {
-            if (data['ret'] != 0) {
+            if (data.kickout) {
+              Swal.fire({
+                title: '抱歉',
+                type: 'error',
+                text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+                confirmButtonText: "确定",
+                showCancelButton: false,
+              }).then(function (result) {
+                window.location.href = "login"
+              });
+            }
+            else if (data['ret'] != 0) {
               swal("修改成功", "请刷新页面", "success");
             }
             else {
@@ -363,5 +407,5 @@
     })
   });
   fitwindow(0)
-  $("#remainingsum").onPositionChanged(function(){fitwindow(0)});
+  $("#remainingsum").onPositionChanged(function () { fitwindow(0) });
 </script>

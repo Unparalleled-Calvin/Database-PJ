@@ -37,6 +37,7 @@
     <script src="{% static '/js/jquery.counterup.min.js' %}"></script>
     <script src="{% static '/js/gadgets.js' %}"></script>
     <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+
 <body>
     <div id="app">
         <div class="main-wrapper">
@@ -196,7 +197,18 @@
                 csrfmiddlewaretoken: csrfToken,
             },
             success: function (data) {
-                if (data['ret'] != 0) {
+                if (data.kickout) {
+                    Swal.fire({
+                        title: '抱歉',
+                        type: 'error',
+                        text: '您的账号已在新的ip地址登录，如果不是本人信任的行为，请尽快修改密码',
+                        confirmButtonText: "确定",
+                        showCancelButton: false,
+                    }).then(function (result) {
+                        window.location.href = "login"
+                    });
+                }
+                else if (data['ret'] != 0) {
                     swal("查询成功", "", "success");
                     $("#table-div")[0].innerHTML = data['div']
                     eval(data['script'])
@@ -208,5 +220,5 @@
         });
     });
     fitwindow(0)
-    $("#table-div").onPositionChanged(function(){fitwindow(0)});
+    $("#table-div").onPositionChanged(function () { fitwindow(0) });
 </script>
