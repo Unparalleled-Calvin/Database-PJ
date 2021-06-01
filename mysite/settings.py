@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django_apscheduler",
     'fdu_card_app',
 ]
-APSCHEDULER_DATETIME_FORMAT =  "N j, Y, f:s a"  # Default
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbpj', #数据库名字
-        'USER':'postgres',
-        'PASSWORD':'admin',
-        'HOST':'localhost',
+        'NAME': 'test1',  # 数据库名字
+        'USER': 'postgres',
+        'PASSWORD': 'Chou20011222',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -127,5 +127,5 @@ USE_TZ = False
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,"static")
+    os.path.join(BASE_DIR, "static")
 ]
