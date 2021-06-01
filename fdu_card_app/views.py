@@ -77,7 +77,7 @@ def logout(request):
 
 def register(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
         return kickout(request, ip)
     ret_dict = {}
 
@@ -155,7 +155,7 @@ def register(request):
 
 def user(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
         return kickout(request, ip)
 
     def toDataDict(dataTuple, forChange=None):  # 将元组数据转成字典数据，并将其中的时间类转成字符串
@@ -261,7 +261,7 @@ def user(request):
 
 def canteen(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
         return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
@@ -295,7 +295,7 @@ def canteen(request):
 
 def leave(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
         return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
@@ -329,7 +329,7 @@ def leave(request):
 
 def access(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
         return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
@@ -366,7 +366,7 @@ def access(request):
 
 def analysis(request):
     ip = getIP(request)
-    if ip in kick_out:
+    if ip in kick_out or ('ID' in request.COOKIES and request.COOKIES['ID'] not in login_info):
         return kickout(request, ip)
     if 'ID' not in request.COOKIES:
         return HttpResponseRedirect('/login')
