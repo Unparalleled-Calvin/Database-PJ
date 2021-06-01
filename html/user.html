@@ -111,11 +111,17 @@
                 </div>
                 <div class="card-stats">
                   <div class="card-stats-title" style="padding-top: 0;padding-bottom: 4px;">
-                    <nav aria-label="breadcrumb">
-                      <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page" id="today_consume">今日已消费：{{ today_consume | safe }}元</li>
-                      </ol>
-                    </nav>
+                    <div aria-label="breadcrumb">
+                      <div class="breadcrumb">
+                        <div id="today_consume">今日已消费：{{ today_consume | safe }}元</div>
+                      </div>
+                      <div class="breadcrumb">
+                        <div id="dorm"></div>
+                      </div>
+                      <div class="breadcrumb">
+                        <div id="valid"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="buttons">
@@ -387,4 +393,9 @@
   fitwindow(0)
   $("#remainingsum").onPositionChanged(function () { fitwindow(0) });
   NumDynamic("remainingsum", 10, {{ remainingsum | safe }});
+  var dorm = "{{cdno | safe}}"
+  $("#dorm")[0].innerHTML = dorm != "None" ? "寝室： " + dorm + "号楼" : "寝室：暂无";
+  var valid = {{valid | safe}}
+  $("#valid")[0].innerHTML = valid == 1 ? "权限：已取得" : "权限：未取得"; 
+  
 </script>
