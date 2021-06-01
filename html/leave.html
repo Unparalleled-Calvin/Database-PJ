@@ -180,7 +180,7 @@
     addClassList(input3, "edit_button btn btn-icon icon-left btn-primary btn-clash btn-lg btn-round");
 
     var gname_div = document.createElement("h3");
-    gname_div.innerText = gate[i]["gname"];
+    gname_div.innerText = gate[i]["gno"] + "：" + gate[i]["gname"];
     gname_div.align = "center"
 
     div4.appendChild(input1);
@@ -312,11 +312,11 @@
   $(".edit_button").on('click', function () {
     var gno = $(this).attr("id").split('edit_button')[1];
     var csrfToken = $("[name='csrfmiddlewaretoken']").val();
-    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>校门名：</p><input placeholder='窗口名' value=\'" + gate[gno]['gname'] + "' id='gname_input'></input></div>\
+    var html = "<div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>校门名：</p><input placeholder='校门名' value=\'" + gate[gno]['gname'] + "' id='gname_input'></input></div>\
                <div style='height:60px'><p style='display:inline-block;width:100px;text-align:justify;'>负责人：</p><input placeholder='负责人' value=\'" + gate[gno]['gadmin'] + "' id='gadmin_input'></input></div>\
                <div'><p style='display:inline-block;width:100px;text-align:justify;'>联系方式：</p><input placeholder='联系方式' value=\'" + gate[gno]['gtel'] + "' id='gtel_input'></input></div>";
     Swal.fire({
-      title: '修改窗口信息',
+      title: '修改校门信息',
       type: 'info',
       html: html, // HTML
       focusConfirm: true, //聚焦到确定按钮
