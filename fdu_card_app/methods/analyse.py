@@ -111,7 +111,7 @@ def select_cuisineid_times(cursor, start, end):
     bar = Bar()
     x = []
     y = []
-    ref = ['盱眙龙虾', '香酥烤肉', '麻婆豆腐', '巴蜀烫捞', '香煎豆干', '草莓慕斯', '柠檬冰饮', '松鼠桂鱼']
+    ref = ['盱眙龙虾', '脆皮烤肉', '麻婆豆腐', '巴蜀烫捞', '香煎豆干', '草莓慕斯', '柠檬冰饮', '松鼠桂鱼']
     for row in rows:
         x.append((row[0], ref[row[0]-1]))
         y.append(row[1])

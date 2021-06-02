@@ -178,6 +178,7 @@
   var canteen = {{ canteen| safe }}['canteen'];
   var number = canteen.length;
   var cuisineList = [1, 2, 3, 4, 5, 6, 7, 8].sort(() => { return 0.5 - Math.random(); })
+  var cuisineName = ['盱眙龙虾', '脆皮烤肉', '麻婆豆腐', '巴蜀烫捞', '香煎豆干', '草莓慕斯', '柠檬冰饮', '松鼠桂鱼'];
   for (var i = 0; i < number; i++) {
     var window_row = document.getElementById("window_row");
 
@@ -200,9 +201,9 @@
     info1.align = "center";
     info1.innerText = "窗口号：" + canteen[i]['wno']
 
-    var info2 = document.createElement("h6");
+    var info2 = document.createElement("h3");
     info2.align = "center";
-    info2.innerText = "窗口名：" + canteen[i]['wname']
+    info2.innerText = cuisineName[cuisineid - 1];
 
     var div3 = document.createElement("div");
     div3.classList.add("buttons");
@@ -235,7 +236,7 @@
     div3.appendChild(form1);
     div2.appendChild(i1);
     div2.appendChild(info1);
-    // div2.appendChild(info2);
+    div2.appendChild(info2);
     div2.appendChild(img);
     div2.appendChild(price_div);
     div2.appendChild(div3);
@@ -283,7 +284,7 @@
     var wno = $(this).attr("id").split('order_button')[1];
     if (getCookieByString('ID') != 'admin') {
       var cuisineid = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.className.split("cuisine_")[1];
-      var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[3].className.split(' ')[1];
+      var price = ($(this)[0]).parentNode.parentNode.parentNode.parentNode.childNodes[4].className.split(' ')[1];
       order(wno, cuisineid, price);
     }
     else {
