@@ -177,7 +177,7 @@ def select_student(cursor):
 
 # 查询所有其他人员信息
 def select_others(cursor):
-    sql = "select * from person natural join others order by id"
+    sql = "select * from person natural join others where id <> 'admin' order by id"
     cursor.execute(sql)
     rows = cursor.fetchall()
     keylist = ['id', 'name', 'work']

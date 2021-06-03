@@ -34,7 +34,7 @@ def update_card(cursor, id, newpasswd):
 
 # 重置密码
 def default_passwd(cursor, id):
-    sql = "update card set passwd = '000000' where ID = '{}' and valid <> 0".format(
+    sql = "update card set passwd = '000000' where ID = '{}' and ID <> 'admin' and valid <> 0".format(
         id)
     cursor.execute(sql)
     return cursor.rowcount
