@@ -255,5 +255,5 @@ insert INTO person
 VALUES('admin', 'admin');
 insert into others
 VALUES('admin', 'admin');
-insert into card(ID)
-VALUES('admin')
+insert into card(ID, passwd)
+VALUES('admin', 'yjjcchdbpj')
