@@ -7,27 +7,32 @@ import sys
 import json
 import re
 sys.path.append('.\\fdu_card_app')
-from methods import analyse
-from methods import select
-from methods import insert
-from methods import update
-from methods import delete
+from methods import analyse  # NOQA:E402
+from methods import select  # NOQA:E402
+from methods import insert  # NOQA:E402
+from methods import update  # NOQA:E402
+from methods import delete  # NOQA:E402
 cursor = connection.cursor()
 
 login_info = dict()
 kick_out = set()
 
 # automatic backup
-import os
-from datetime import datetime
-from datetime import date
-from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
-def backup():    
+import os  # NOQA:E402
+from datetime import datetime  # NOQA:E402
+from datetime import date  # NOQA:E402
+from apscheduler.schedulers.background import BackgroundScheduler  # NOQA:E402
+from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job  # NOQA:E402
+
+
+def backup():
     os.system("pg_dump -a \"host=127.0.0.1 hostaddr=127.0.0.1 port=5432 user=postgres password=admin dbname=dbpj\" > backup.sql")
+
+
 scheduler = BackgroundScheduler()
 scheduler.add_job(backup, 'cron', hour='0', minute='0', args=[])
 scheduler.start()
+
 
 # Create your views here.
 def getIP(request):
@@ -36,14 +41,16 @@ def getIP(request):
     else:
         return request.META.get("REMOTE_ADDR")
 
-def kickout(request, ip, method = "GET"):
+
+def kickout(request, ip, method="GET"):
     if method == "GET":
-        response = render(request, "login.html", {'kickout':1})
+        response = render(request, "login.html", {'kickout': 1})
     else:
-        response = JsonResponse({"kickout" : 1})
+        response = JsonResponse({"kickout": 1})
     response.delete_cookie('ID')
     kick_out.discard((request.COOKIES['ID'], ip))
     return response
+
 
 def login(request):
     ip = getIP(request)
@@ -57,7 +64,8 @@ def login(request):
             ret.set_cookie(
                 'ID', request.POST['ID'], expires=datetime.now() + timedelta(minutes=5))
             if request.POST['ID'] in login_info and login_info[request.POST['ID']] != ip:
-                kick_out.add((request.POST['ID'], login_info[request.POST['ID']]))
+                kick_out.add(
+                    (request.POST['ID'], login_info[request.POST['ID']]))
             login_info[request.POST['ID']] = ip
         else:
             ret_dict['ret'] = 2
@@ -67,7 +75,7 @@ def login(request):
         if 'ID' in request.COOKIES:
             return HttpResponseRedirect('/user')
         else:
-            return render(request, "login.html", {'kickout':0})
+            return render(request, "login.html", {'kickout': 0})
 
 
 def logout(request):
@@ -366,6 +374,7 @@ def access(request):
             'name': "\"" + select.select_v_name(cursor, request.COOKIES['ID']) + "\""
         })
 
+
 def analysis(request):
     if 'ID' not in request.COOKIES or request.COOKIES['ID'] != 'admin':
         return HttpResponseRedirect('/login')
@@ -375,20 +384,28 @@ def analysis(request):
     if request.method == 'POST':
         ret_dict = {}
         if request.POST['role'] == 'record_count':
-            analyse.select_record_times(cursor, request.POST['start'], request.POST['end'])
+            analyse.select_record_times(
+                cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'access_count':
-            analyse.select_access_times(cursor, request.POST['start'], request.POST['end'])
+            analyse.select_access_times(
+                cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'profit':
-            analyse.select_profit(cursor, request.POST['start'], request.POST['end'])
+            analyse.select_profit(
+                cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'cuisine':
-            analyse.select_cuisineid_times(cursor, request.POST['start'], request.POST['end'])
+            analyse.select_cuisineid_times(
+                cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'rank':
-            analyse.select_rank_teacher(cursor, request.POST['start'], request.POST['end'])
+            analyse.select_rank_teacher(
+                cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'class':
-            analyse.select_class_student(cursor, request.POST['start'], request.POST['end'])
+            analyse.select_class_student(
+                cursor, request.POST['start'], request.POST['end'])
         elif request.POST['role'] == 'dormitory':
-            analyse.select_dno_people(cursor, request.POST['start'], request.POST['end'])
-        mode = re.compile(".*?(<div.+?></div>).*?<script>(.*?)</script>", re.DOTALL)
+            analyse.select_dno_people(
+                cursor, request.POST['start'], request.POST['end'])
+        mode = re.compile(
+            ".*?(<div.+?></div>).*?<script>(.*?)</script>", re.DOTALL)
         try:
             with open(r"./graph.html", "r") as f:
                 result = mode.findall(f.read())
